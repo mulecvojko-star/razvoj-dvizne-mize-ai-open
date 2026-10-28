@@ -1,0 +1,15 @@
+{
+  "variant": "V01",
+  "revision": "R01",
+  "inputs": {
+    "data_origin": "synthetic",
+    "payload_kg": 300,
+    "platform_length_mm": 1200,
+    "platform_width_mm": 800,
+    "min_height_mm": 350,
+    "max_height_mm": 1000,
+    "purpose": "Učni primer; podatki niso zahteve za resnično napravo."
+  },
+  "results": {},
+  "open_questions": []
+}
