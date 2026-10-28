@@ -1,0 +1,81 @@
+"""Explicit, single-use cycle approval with a persistent local revision ledger."""
+
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+
+from src.models import Handoff
+from src.models.contracts import digest, validate_inputs
+from .pipeline import Orchestrator
+
+
+def now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+class CycleRunner:
+    def __init__(self, directory: Path, orchestrator: Orchestrator | None = None):
+        self.directory = Path(directory)
+        self.orchestrator = orchestrator or Orchestrator()
+
+    def run(self, handoff: Handoff, *, approved_label: str | None = None,
+            mode: str = "simulated", source: str = "programmatic") -> Handoff:
+        handoff.validate()
+        validate_inputs(handoff)
+        if approved_label != handoff.label:
+            raise ValueError("Vsak cikel zahteva izrecno odobritev točne oznake variante in revizije.")
+        if handoff.results:
+            raise ValueError("Nov cikel zahteva prazne rezultate.")
+        self.directory.mkdir(parents=True, exist_ok=True)
+        lock = self.directory / ".lock"
+        try:
+            fd = lock.open("x")
+        except FileExistsError:
+            raise ValueError("Drug cikel teče ali je ostal zaklep po prekinitvi; preveri dnevnik.") from None
+        try:
+            with fd:
+                fd.write(f"{handoff.label}\n")
+            records = []
+            for path in self.directory.glob(f"{handoff.variant}-R*.json"):
+                records.append(json.loads(path.read_text(encoding="utf-8")))
+            previous = max(records, key=lambda r: int(r["revision"][1:])) if records else None
+            expected = int(previous["revision"][1:]) + 1 if previous else 1
+            if int(handoff.revision[1:]) != expected:
+                raise ValueError(f"Pričakovana naslednja revizija: R{expected:02d}.")
+            record = {"variant": handoff.variant, "revision": handoff.revision,
+                      "approved_label": approved_label, "approved_at": now(), "mode": mode,
+                      "source": source, "input_sha256": digest(handoff.inputs),
+                      "previous_record_sha256": digest(previous) if previous else None,
+                      "status": "running", "handoff": handoff.to_dict()}
+            # Exclusive creation prevents overwriting an existing revision or its approval.
+            path = self.directory / f"{handoff.label}.json"
+            with path.open("x", encoding="utf-8") as file:
+                json.dump(record, file, ensure_ascii=False, indent=2, allow_nan=False)
+
+            def save():
+                temporary = path.with_suffix(".tmp")
+                temporary.write_text(json.dumps(record, ensure_ascii=False, indent=2,
+                                                 allow_nan=False), encoding="utf-8")
+                temporary.replace(path)
+
+            def checkpoint(current):
+                record["handoff"] = current.to_dict()
+                save()
+
+            try:
+                result = self.orchestrator.run(
+                    handoff, expected_variant=handoff.variant, expected_revision=handoff.revision,
+                    on_step=checkpoint, should_stop=lambda: (self.directory / "STOP").exists())
+                record["status"] = "awaiting_approval"
+                record["review_decision"] = result.results["recenzent"]["decision"]
+                record["finished_at"] = now()
+                save()
+                return result
+            except BaseException:
+                record["status"] = "stopped"
+                record["finished_at"] = now()
+                # Persist partial results, never raw exceptions or credentials.
+                save()
+                raise
+        finally:
+            lock.unlink()

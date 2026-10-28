@@ -15,7 +15,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install optional API adapter for offline contract tests
+        run: python -m pip install ".[ai]"
       - name: Run tests
         run: python -m unittest discover -s tests -v
       - name: Run synthetic example
-        run: python -m src.orchestrator examples/V01-R01.json
+        run: python -m src.orchestrator examples/V01-R01.json --approve-cycle V01-R01

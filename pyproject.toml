@@ -4,10 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "razvoj-dvizne-mize-ai"
-version = "0.1.0"
+version = "0.2.0"
 description = "Učni orkestrator štirih simuliranih agentov"
 requires-python = ">=3.11"
 dependencies = []
 
 [tool.setuptools.packages.find]
 include = ["src*"]
+
+[project.optional-dependencies]
+ai = ["openai>=2.0,<3"]
+
+[tool.setuptools.package-data]
+"src.agents" = ["*.md"]

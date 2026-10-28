@@ -5,6 +5,8 @@ from dataclasses import asdict, dataclass, field
 import re
 from typing import Any
 
+from .contracts import canonical
+
 
 @dataclass
 class Handoff:
@@ -13,6 +15,7 @@ class Handoff:
     inputs: dict[str, Any]
     results: dict[str, dict[str, Any]] = field(default_factory=dict)
     open_questions: list[str] = field(default_factory=list)
+    input_sources: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         self.validate()
@@ -35,6 +38,15 @@ class Handoff:
         if (not isinstance(self.open_questions, list)
                 or any(not isinstance(q, str) for q in self.open_questions)):
             raise ValueError("Odprta vprašanja morajo biti seznam nizov.")
+
+        if (not isinstance(self.input_sources, dict)
+                or any(k not in self.inputs or not isinstance(v, str) or not v.strip()
+                       for k, v in self.input_sources.items())):
+            raise ValueError("Viri morajo povezovati vhodna polja z nepraznimi opisi izvora.")
+        try:
+            canonical(self.to_dict())
+        except (TypeError, ValueError, RecursionError) as exc:
+            raise ValueError("Predaja mora vsebovati končne JSON vrednosti.") from exc
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
