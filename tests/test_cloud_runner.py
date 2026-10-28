@@ -10,7 +10,7 @@ from unittest.mock import Mock, patch
 
 from src.orchestrator.cloud import (APPROVALS, BoundedTransport, TrialConfig,
                                     run_trial, synthetic_handoff)
-from test_ai_cycles import FakeTransport
+from test_ai_cycles import FakeTransport, answer
 
 CONFIG = TrialConfig("simulated", "gpt-4.1-mini", 1500, 48000, APPROVALS["simulated"])
 LIVE = replace(CONFIG, mode="openai", approval=APPROVALS["openai"])
@@ -124,6 +124,55 @@ class CloudRunnerTests(unittest.TestCase):
             other.generate("x" * 16001, value)
         self.assertEqual(other.calls, 0)
         self.assertEqual(underlying.generate.call_count, 4)
+
+    def test_gpt_54_mini_workflow_input_reaches_sdk_for_all_four_agents_offline(self):
+        try:
+            import httpx
+            from openai import OpenAI
+        except ImportError:
+            self.skipTest("Optional [ai] dependency is not installed")
+        from src.models import Handoff
+        from src.models.contracts import ORDER, RESPONSE_SCHEMA
+
+        requests = []
+
+        def handle(request):
+            payload = json.loads(request.content)
+            self.assertEqual(payload["model"], "gpt-5.4-mini")
+            self.assertEqual(payload["max_output_tokens"], 1500)
+            self.assertEqual(payload["text"]["format"]["schema"], RESPONSE_SCHEMA)
+            self.assertTrue(payload["text"]["format"]["strict"])
+            self.assertFalse(payload["store"])
+            incoming = Handoff(**json.loads(payload["input"]))
+            self.assertEqual(list(incoming.results), list(ORDER[:len(requests)]))
+            data = answer(ORDER[len(requests)], incoming)
+            requests.append(payload)
+            return httpx.Response(200, json={
+                "id": f"resp_{len(requests)}", "object": "response", "created_at": 0,
+                "status": "completed", "model": "gpt-5.4-mini",
+                "output": [{"type": "message", "id": "msg_mock", "role": "assistant",
+                            "status": "completed", "content": [{"type": "output_text",
+                            "text": json.dumps(data), "annotations": []}]}],
+                "usage": {"input_tokens": 10, "output_tokens": 20, "total_tokens": 30}})
+
+        client = OpenAI(api_key="offline-test-placeholder", max_retries=0,
+                        http_client=httpx.Client(transport=httpx.MockTransport(handle)))
+        environment = {"GITHUB_ACTIONS": "true", "GITHUB_EVENT_NAME": "workflow_dispatch",
+                       "GITHUB_REF": "refs/heads/main", "GITHUB_RUN_ATTEMPT": "1",
+                       "TRIAL_MODE": "openai", "TRIAL_MODEL": "gpt-5.4-mini",
+                       "TRIAL_MAX_OUTPUT_TOKENS": "1500", "TRIAL_MAX_PROMPT_BYTES": "48000",
+                       "TRIAL_APPROVAL": APPROVALS["openai"],
+                       "OPENAI_API_KEY": "offline-test-placeholder"}
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, environment), \
+                patch("openai.OpenAI", return_value=client):
+            config = TrialConfig.from_environment()
+            run_trial(config, directory)
+            report = json.loads((Path(directory) / "report.json").read_text())
+            manifest = json.loads((Path(directory) / "manifest.json").read_text())
+            self.assertEqual(report["status"], "awaiting_approval")
+            self.assertEqual(report["api_requests_started"], 4)
+            self.assertEqual(manifest["configuration"]["model"], "gpt-5.4-mini")
+        self.assertEqual(len(requests), 4)
 
     def test_missing_secret_is_a_local_failure_with_artifact(self):
         with tempfile.TemporaryDirectory() as directory, \

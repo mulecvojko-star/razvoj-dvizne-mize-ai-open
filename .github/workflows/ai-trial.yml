@@ -13,7 +13,7 @@ on:
       model:
         description: 'Model (dostopnost v racunu ni preverjena)'
         type: choice
-        options: [gpt-4.1-mini, gpt-4.1-nano]
+        options: [gpt-4.1-mini, gpt-4.1-nano, gpt-5.4-mini]
         default: gpt-4.1-mini
         required: true
       max_output_tokens:

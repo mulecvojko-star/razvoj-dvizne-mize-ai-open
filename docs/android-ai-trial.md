@@ -68,7 +68,7 @@ dovoljenja ali dostop do modela. Tega brez zahteve ponudniku nismo preverjali.
 Pred začetkom preglej simulacijski artifact, omejitve in nastavitev skrivnosti.
 
 1. Odpri isti workflow in **Run workflow** z vejo **main**.
-2. Izberi **openai** in model **gpt-4.1-mini** ali **gpt-4.1-nano**. Za oba je
+2. Izberi **openai** in model **gpt-4.1-mini**, **gpt-4.1-nano** ali **gpt-5.4-mini**. Za vse tri je
    pripravljena uporaba Responses API in Structured Outputs; dostopnost v tvojem
    računu ostaja nepreverjena. Privzeti model je `gpt-4.1-mini`.
 3. Izberi `max_output_tokens` (256–4000, privzeto 1500 na agenta) ter
@@ -92,6 +92,26 @@ zahteve ali odprave njenih stroškov. Workflow poskusi naložiti razpoložljive 
 rezultate tudi ob napaki; ob prisilni prekinitvi, izgubi runnerja ali neuspešnem
 nalaganju artifact morda ne bo na voljo. Pregled vedno zahteva človeka, tudi ko
 model vrne `accepted`.
+
+## Združljivost modela GPT-5.4 Mini
+
+Po [uradni dokumentaciji modela](https://developers.openai.com/api/docs/models/gpt-5.4-mini)
+(preverjeno 2026-10-28) `gpt-5.4-mini` podpira Responses API in Structured Outputs.
+Obstoječi `text.format` z `type=json_schema`, `strict=True`, zahtevana polja in
+`additionalProperties=False` ne potrebujejo sprememb. Uporabljeni `instructions`,
+`input`, `max_output_tokens` in `store=False` ostanejo enaki; dodatni parametri ali
+nadgradnja SDK za to zahtevo niso potrebni. Privzeti model ostaja `gpt-4.1-mini`.
+
+Model podpira reasoning, privzeti `reasoning.effort` je `none`; program ga ne
+spreminja. [Omejitev izhodnih tokenov](https://developers.openai.com/api/docs/guides/token-counting)
+vključuje tudi morebitne reasoning in nevidne oblikovne tokene, zato ni jamstvo
+za enako število tokenov vidnega JSON. Prenizka meja lahko povzroči `incomplete`;
+obstoječi adapter tak odgovor zavrne in ustavi cikel brez ponovitve.
+
+Združljivost oblike zahtev je preverjena s simuliranimi odgovori prek dejanskega
+SDK 2.54.0 in lokalno prestreženega HTTP-prenosa. Dostop računa do modela, kvote,
+obračunavanje in kakovost resničnih odgovorov niso preverjeni. Model se lahko
+cenovno razlikuje od modelov GPT-4.1; pred odobritvijo preveri aktualni cenik.
 
 ## Omejitve porabe in finančna meja
 
