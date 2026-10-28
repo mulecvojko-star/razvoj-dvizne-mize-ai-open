@@ -124,6 +124,7 @@ def run_trial(config, directory, *, preflight=False):
     transport = None
     bounded = None
     status = "stopped"
+    result = None
     try:
         pipeline = Orchestrator()
         if config.mode == "openai":
@@ -135,7 +136,8 @@ def run_trial(config, directory, *, preflight=False):
         write_json(directory / "result.json", result.to_dict())
         status = "awaiting_approval"
     finally:
-        report = {"status": status, "mode": config.mode,
+        report = {"status": status, "mode": config.mode, "engineering_verified": False,
+                  "technical_status": result.results["recenzent"].get("technical_status", "not_evaluated") if result else "not_completed",
                   "api_requests_started": bounded.calls if bounded else 0,
                   "reported_input_tokens": bounded.reported_input_tokens if bounded else 0,
                   "reported_output_tokens": bounded.reported_output_tokens if bounded else 0,

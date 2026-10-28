@@ -1,0 +1,996 @@
+{
+  "variant": "V01",
+  "revision": "R01",
+  "inputs": {
+    "data_origin": "synthetic",
+    "payload_kg": 300,
+    "platform_length_mm": 1200,
+    "platform_width_mm": 800,
+    "min_height_mm": 350,
+    "max_height_mm": 1000,
+    "purpose": "Učni primer; podatki niso zahteve za resnično napravo."
+  },
+  "results": {
+    "konstruktor": {
+      "simulated": true,
+      "handoff_label": "V01-R01",
+      "assumptions": [
+        "Dve ravnini s po dvema rokama in sredinskim sklepom; skupaj štiri roke; sintetičen prečni odmik width/8.",
+        "A je spodnji fiksni sklep, B spodnji drsnik, D zgornji sklep na ploščadi, C zgornji drsnik.",
+        "En cilinder v sredini širine prek toge prečke poganja obe ravnini; sila ni deljena z dve.",
+        "Offset vsebuje skupno višino podnožja in ploščadi; navpična ovojnica ni načrt detajlov.",
+        "Vsa predpostavljena premična masa sledi ploščadi; masa rok je konzervativno zgoščena na vrhu.",
+        "Kvazistatičen centričen tovor; load_factor ni predpisan standardni varnostni faktor.",
+        "Vpetje bata je na deležu f roke AC; pozitivno podaljševanje cilindra dviga ploščad.",
+        "Idealni členi brez upogiba; trenje modelira skupni mehanski izkoristek."
+      ],
+      "trace": {
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae",
+        "handoff_sha256": "1dd26055c9f664cc454ec53ac3ae8708ac1cd64077bcd88509bc14ffc449b705",
+        "mode": "simulated"
+      },
+      "concept": "Učna škarjasta dvižna miza",
+      "requirements": {
+        "data_origin": "synthetic",
+        "payload_kg": 300,
+        "platform_length_mm": 1200,
+        "platform_width_mm": 800,
+        "min_height_mm": 350,
+        "max_height_mm": 1000,
+        "purpose": "Učni primer; podatki niso zahteve za resnično napravo."
+      },
+      "engineering_verified": false,
+      "technical_status": "preliminary",
+      "engineering": {
+        "status": "preliminary",
+        "engineering_verified": false,
+        "mechanism": "single_stage_two_parallel_scissor_planes_one_central_extension_cylinder",
+        "coordinate_system": "x vzdolž ploščadi, z navzgor; A=(0,0); mm; prečni sredini cilindra y=width/2",
+        "scissor_plane_y_mm": [
+          100.0,
+          700.0
+        ],
+        "cylinder_y_mm": 400.0,
+        "parameters": {
+          "arm_length_mm": 1100,
+          "structure_offset_mm": 100,
+          "cylinder_base_x_mm": 250,
+          "rod_pin_fraction": 0.5,
+          "moving_mass_kg": 100,
+          "load_factor": 1.3,
+          "mechanical_efficiency": 0.85,
+          "gravity_m_s2": 9.81
+        },
+        "assumptions": [
+          "Dve ravnini s po dvema rokama in sredinskim sklepom; skupaj štiri roke; sintetičen prečni odmik width/8.",
+          "A je spodnji fiksni sklep, B spodnji drsnik, D zgornji sklep na ploščadi, C zgornji drsnik.",
+          "En cilinder v sredini širine prek toge prečke poganja obe ravnini; sila ni deljena z dve.",
+          "Offset vsebuje skupno višino podnožja in ploščadi; navpična ovojnica ni načrt detajlov.",
+          "Vsa predpostavljena premična masa sledi ploščadi; masa rok je konzervativno zgoščena na vrhu.",
+          "Kvazistatičen centričen tovor; load_factor ni predpisan standardni varnostni faktor.",
+          "Vpetje bata je na deležu f roke AC; pozitivno podaljševanje cilindra dviga ploščad.",
+          "Idealni členi brez upogiba; trenje modelira skupni mehanski izkoristek."
+        ],
+        "assumption_sources": {
+          "arm_length_mm": "synthetic_default",
+          "structure_offset_mm": "synthetic_default",
+          "cylinder_base_x_mm": "synthetic_default",
+          "rod_pin_fraction": "synthetic_default",
+          "moving_mass_kg": "synthetic_default",
+          "load_factor": "synthetic_default",
+          "mechanical_efficiency": "synthetic_default"
+        },
+        "lift_mm": 650,
+        "design_vertical_load_N": 5101.2,
+        "cylinder_closed_pin_mm": 311.7634262219401,
+        "cylinder_open_pin_mm": 454.84735570472543,
+        "stroke_mm": 143.08392948278532,
+        "peak_cylinder_force_N": 64136.449795429005,
+        "peak_basis": "Analitično F pada s H za a,f>0 in 0<h<L; največja sila je v spodnji legi.",
+        "positions": [
+          {
+            "platform_height_mm": 350.0,
+            "scissor_height_mm": 250.0,
+            "span_mm": 1071.2142642814274,
+            "angle_deg": 13.136558786944853,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              1071.2142642814274,
+              0.0
+            ],
+            "C_mm": [
+              1071.2142642814274,
+              250.0
+            ],
+            "D_mm": [
+              0.0,
+              250.0
+            ],
+            "cross_pin_mm": [
+              535.6071321407137,
+              125.0
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              535.6071321407137,
+              125.0
+            ],
+            "cylinder_length_mm": 311.7634262219401,
+            "dl_dH": 0.09357255950162684,
+            "cylinder_force_N": 64136.449795429005
+          },
+          {
+            "platform_height_mm": 415.0,
+            "scissor_height_mm": 315.0,
+            "span_mm": 1053.9331098319285,
+            "angle_deg": 16.640376935800727,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              1053.9331098319285,
+              0.0
+            ],
+            "C_mm": [
+              1053.9331098319285,
+              315.0
+            ],
+            "D_mm": [
+              0.0,
+              315.0
+            ],
+            "cross_pin_mm": [
+              526.9665549159643,
+              157.5
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              526.9665549159643,
+              157.5
+            ],
+            "cylinder_length_mm": 318.6168899195676,
+            "dl_dH": 0.1172569853595621,
+            "cylinder_force_N": 51181.69929324793
+          },
+          {
+            "platform_height_mm": 480.0,
+            "scissor_height_mm": 380.0,
+            "span_mm": 1032.2790320451152,
+            "angle_deg": 20.20954537375271,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              1032.2790320451152,
+              0.0
+            ],
+            "C_mm": [
+              1032.2790320451152,
+              380.0
+            ],
+            "D_mm": [
+              0.0,
+              380.0
+            ],
+            "cross_pin_mm": [
+              516.1395160225576,
+              190.0
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              516.1395160225576,
+              190.0
+            ],
+            "cylinder_length_mm": 327.0018990598085,
+            "dl_dH": 0.14071689023334713,
+            "cylinder_force_N": 42648.837355301825
+          },
+          {
+            "platform_height_mm": 545.0,
+            "scissor_height_mm": 445.0,
+            "span_mm": 1005.9696814516827,
+            "angle_deg": 23.86264612242268,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              1005.9696814516827,
+              0.0
+            ],
+            "C_mm": [
+              1005.9696814516827,
+              445.0
+            ],
+            "D_mm": [
+              0.0,
+              445.0
+            ],
+            "cross_pin_mm": [
+              502.98484072584137,
+              222.5
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              502.98484072584137,
+              222.5
+            ],
+            "cylinder_length_mm": 336.9088595407953,
+            "dl_dH": 0.16412422960488962,
+            "cylinder_force_N": 36566.27530958468
+          },
+          {
+            "platform_height_mm": 610.0,
+            "scissor_height_mm": 510.0,
+            "span_mm": 974.6281342132496,
+            "angle_deg": 27.62200549216801,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              974.6281342132496,
+              0.0
+            ],
+            "C_mm": [
+              974.6281342132496,
+              510.0
+            ],
+            "D_mm": [
+              0.0,
+              510.0
+            ],
+            "cross_pin_mm": [
+              487.3140671066248,
+              255.0
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              487.3140671066248,
+              255.0
+            ],
+            "cylinder_length_mm": 348.34317338895505,
+            "dl_dH": 0.18777334433809373,
+            "cylinder_force_N": 31960.935594245424
+          },
+          {
+            "platform_height_mm": 675.0,
+            "scissor_height_mm": 575.0,
+            "span_mm": 937.7499666755526,
+            "angle_deg": 31.515370002088815,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              937.7499666755526,
+              0.0
+            ],
+            "C_mm": [
+              937.7499666755526,
+              575.0
+            ],
+            "D_mm": [
+              0.0,
+              575.0
+            ],
+            "cross_pin_mm": [
+              468.8749833377763,
+              287.5
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              468.8749833377763,
+              287.5
+            ],
+            "cylinder_length_mm": 361.33434424520436,
+            "dl_dH": 0.21211997037390495,
+            "cylinder_force_N": 28292.535371031605
+          },
+          {
+            "platform_height_mm": 740.0,
+            "scissor_height_mm": 640.0,
+            "span_mm": 894.6507698538016,
+            "angle_deg": 35.57852573245868,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              894.6507698538016,
+              0.0
+            ],
+            "C_mm": [
+              894.6507698538016,
+              640.0
+            ],
+            "D_mm": [
+              0.0,
+              640.0
+            ],
+            "cross_pin_mm": [
+              447.3253849269008,
+              320.0
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              447.3253849269008,
+              320.0
+            ],
+            "cylinder_length_mm": 375.9485437351095,
+            "dl_dH": 0.23785267503252808,
+            "cylinder_force_N": 25231.63451445373
+          },
+          {
+            "platform_height_mm": 805.0,
+            "scissor_height_mm": 705.0,
+            "span_mm": 844.3784696449809,
+            "angle_deg": 39.85964156686904,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              844.3784696449809,
+              0.0
+            ],
+            "C_mm": [
+              844.3784696449809,
+              705.0
+            ],
+            "D_mm": [
+              0.0,
+              705.0
+            ],
+            "cross_pin_mm": [
+              422.18923482249045,
+              352.5
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              422.18923482249045,
+              352.5
+            ],
+            "cylinder_length_mm": 392.30776513950724,
+            "dl_dH": 0.26603273213810924,
+            "cylinder_force_N": 22558.922417074176
+          },
+          {
+            "platform_height_mm": 870.0,
+            "scissor_height_mm": 770.0,
+            "span_mm": 785.5571271397135,
+            "angle_deg": 44.4270040008057,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              785.5571271397135,
+              0.0
+            ],
+            "C_mm": [
+              785.5571271397135,
+              770.0
+            ],
+            "D_mm": [
+              0.0,
+              770.0
+            ],
+            "cross_pin_mm": [
+              392.7785635698568,
+              385.0
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              392.7785635698568,
+              385.0
+            ],
+            "cylinder_length_mm": 410.62235474346943,
+            "dl_dH": 0.298387328252005,
+            "cylinder_force_N": 20112.823824868832
+          },
+          {
+            "platform_height_mm": 935.0,
+            "scissor_height_mm": 835.0,
+            "span_mm": 716.0830957368006,
+            "angle_deg": 49.384119857611196,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              716.0830957368006,
+              0.0
+            ],
+            "C_mm": [
+              716.0830957368006,
+              835.0
+            ],
+            "D_mm": [
+              0.0,
+              835.0
+            ],
+            "cross_pin_mm": [
+              358.0415478684003,
+              417.5
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              358.0415478684003,
+              417.5
+            ],
+            "cylinder_length_mm": 431.25308818117446,
+            "dl_dH": 0.3379876634304643,
+            "cylinder_force_N": 17756.304191086485
+          },
+          {
+            "platform_height_mm": 1000.0,
+            "scissor_height_mm": 900.0,
+            "span_mm": 632.4555320336759,
+            "angle_deg": 54.903198772415415,
+            "A_mm": [
+              0.0,
+              0.0
+            ],
+            "B_mm": [
+              632.4555320336759,
+              0.0
+            ],
+            "C_mm": [
+              632.4555320336759,
+              900.0
+            ],
+            "D_mm": [
+              0.0,
+              900.0
+            ],
+            "cross_pin_mm": [
+              316.22776601683796,
+              450.0
+            ],
+            "cylinder_base_mm": [
+              250,
+              0.0
+            ],
+            "cylinder_rod_pin_mm": [
+              316.22776601683796,
+              450.0
+            ],
+            "cylinder_length_mm": 454.84735570472543,
+            "dl_dH": 0.3910721171696664,
+            "cylinder_force_N": 15346.048724057136
+          }
+        ],
+        "units": {
+          "length": "mm",
+          "force": "N",
+          "pressure": "bar",
+          "flow": "L/min",
+          "power": "kW",
+          "currency": "EUR"
+        },
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae"
+      },
+      "calculations": [
+        {
+          "quantity": "lift_mm",
+          "value": 650,
+          "unit": "mm"
+        },
+        {
+          "quantity": "cylinder_closed_pin_mm",
+          "value": 311.7634262219401,
+          "unit": "mm"
+        },
+        {
+          "quantity": "cylinder_open_pin_mm",
+          "value": 454.84735570472543,
+          "unit": "mm"
+        },
+        {
+          "quantity": "stroke_mm",
+          "value": 143.08392948278532,
+          "unit": "mm"
+        },
+        {
+          "quantity": "peak_cylinder_force_N",
+          "value": 64136.449795429005,
+          "unit": "N"
+        },
+        {
+          "quantity": "span_low_mm",
+          "value": 1071.2142642814274,
+          "unit": "mm"
+        },
+        {
+          "quantity": "span_high_mm",
+          "value": 632.4555320336759,
+          "unit": "mm"
+        }
+      ],
+      "cost_items": []
+    },
+    "hidravlik": {
+      "simulated": true,
+      "handoff_label": "V01-R01",
+      "assumptions": [
+        "Sintetičen učni primer; izračuni niso preverjeni."
+      ],
+      "trace": {
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae",
+        "handoff_sha256": "0eea4d7d2fc0c0abcb50480c28297f45ec8a84e7f1be74ca7ed7b4e303806344",
+        "mode": "simulated"
+      },
+      "source_concept": "Učna škarjasta dvižna miza",
+      "analysis": "Simulirana hidravlična analiza; dimenzioniranje še ni izvedeno.",
+      "engineering_verified": false,
+      "technical_status": "preliminary",
+      "engineering": {
+        "status": "preliminary",
+        "engineering_verified": false,
+        "source_constructor_sha256": "94cc20c3319fa2744b04a4e076a1f2d44776c59c700e911596022f547304a4d7",
+        "force_curve": [
+          {
+            "platform_height_mm": 350.0,
+            "cylinder_length_mm": 311.7634262219401,
+            "force_N": 64136.449795429005
+          },
+          {
+            "platform_height_mm": 415.0,
+            "cylinder_length_mm": 318.6168899195676,
+            "force_N": 51181.69929324793
+          },
+          {
+            "platform_height_mm": 480.0,
+            "cylinder_length_mm": 327.0018990598085,
+            "force_N": 42648.837355301825
+          },
+          {
+            "platform_height_mm": 545.0,
+            "cylinder_length_mm": 336.9088595407953,
+            "force_N": 36566.27530958468
+          },
+          {
+            "platform_height_mm": 610.0,
+            "cylinder_length_mm": 348.34317338895505,
+            "force_N": 31960.935594245424
+          },
+          {
+            "platform_height_mm": 675.0,
+            "cylinder_length_mm": 361.33434424520436,
+            "force_N": 28292.535371031605
+          },
+          {
+            "platform_height_mm": 740.0,
+            "cylinder_length_mm": 375.9485437351095,
+            "force_N": 25231.63451445373
+          },
+          {
+            "platform_height_mm": 805.0,
+            "cylinder_length_mm": 392.30776513950724,
+            "force_N": 22558.922417074176
+          },
+          {
+            "platform_height_mm": 870.0,
+            "cylinder_length_mm": 410.62235474346943,
+            "force_N": 20112.823824868832
+          },
+          {
+            "platform_height_mm": 935.0,
+            "cylinder_length_mm": 431.25308818117446,
+            "force_N": 17756.304191086485
+          },
+          {
+            "platform_height_mm": 1000.0,
+            "cylinder_length_mm": 454.84735570472543,
+            "force_N": 15346.048724057136
+          }
+        ],
+        "max_force_N": 64136.449795429005,
+        "pressure_options": [
+          {
+            "pressure_bar": 160,
+            "theoretical_bore_mm": 71.44100019354329,
+            "piston_area_mm2": 4008.528112214313
+          },
+          {
+            "pressure_bar": 200,
+            "theoretical_bore_mm": 63.898773125335374,
+            "piston_area_mm2": 3206.8224897714504
+          },
+          {
+            "pressure_bar": 250,
+            "theoretical_bore_mm": 57.15280015483464,
+            "piston_area_mm2": 2565.4579918171603
+          },
+          {
+            "pressure_bar": 315,
+            "theoretical_bore_mm": 50.915761160512346,
+            "piston_area_mm2": 2036.0777712834604
+          }
+        ],
+        "reference_pressure_bar": 200,
+        "lift_time_s": null,
+        "flow_L_min": null,
+        "hydraulic_power_kW": null,
+        "shaft_power_kW": null,
+        "flow_basis": "Konstantna hitrost ploščadi, teoretični premer pri 200 bar; pQ je moč pri nastavljeni meji tlaka.",
+        "limitations": [
+          "Brez lift_time_s pretok in moč nista določena.",
+          "Premeri so teoretični za izteg, brez protitlaka in tlačnih izgub; ne pomenijo izbire standardnega cilindra.",
+          "Potrebni so preverba uklona batnice, mrtvih dolžin, bočnih sil, tesnil in dejanske vgradne dolžine.",
+          "Moč na gredi ni določena brez podatkov o izkoristku črpalke/pogona."
+        ],
+        "safety_functions": [
+          "Nosilni/zadrževalni ventil ob cilindru in zaščita ob pretrgu cevi.",
+          "Tlačni omejevalni ventil in nadzorovano spuščanje.",
+          "Mehanska servisna opora, varovanje škarij in preprečitev nenamernega gibanja.",
+          "Končna stikala, zaustavitev v sili in analiza tveganja; zasnovo mora preveriti strokovnjak."
+        ],
+        "units": {
+          "length": "mm",
+          "force": "N",
+          "pressure": "bar",
+          "flow": "L/min",
+          "power": "kW",
+          "currency": "EUR"
+        },
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae"
+      },
+      "calculations": [
+        {
+          "quantity": "max_force_N",
+          "value": 64136.449795429005,
+          "unit": "N"
+        },
+        {
+          "quantity": "bore_160_bar_mm",
+          "value": 71.44100019354329,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_200_bar_mm",
+          "value": 63.898773125335374,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_250_bar_mm",
+          "value": 57.15280015483464,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_315_bar_mm",
+          "value": 50.915761160512346,
+          "unit": "mm"
+        }
+      ],
+      "cost_items": []
+    },
+    "ekonomist": {
+      "simulated": true,
+      "handoff_label": "V01-R01",
+      "assumptions": [
+        "Sintetičen učni primer; izračuni niso preverjeni."
+      ],
+      "trace": {
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae",
+        "handoff_sha256": "3f261b531e68de3bf9c793cf20252043b40d9a9fe7f36e4bd8a969aaf527a238",
+        "mode": "simulated"
+      },
+      "currency": "EUR",
+      "synthetic_total": 1120.0,
+      "basis": "Nepopoln sintetičen vmesni seštevek, brez DDV in dobaviteljskih ponudb.",
+      "hydraulics_verified": false,
+      "engineering_verified": false,
+      "technical_status": "incomplete_estimate",
+      "engineering": {
+        "status": "incomplete_estimate",
+        "engineering_verified": false,
+        "source_constructor_sha256": "94cc20c3319fa2744b04a4e076a1f2d44776c59c700e911596022f547304a4d7",
+        "source_hydraulics_sha256": "aa2f34b6a7de448d1a4995b7bac8f0aa224ba5c87e2ad1ff019a8f72c52931c2",
+        "verified_prices": [],
+        "cost_items": [
+          {
+            "category": "arms",
+            "price_kind": "synthetic",
+            "amount_EUR": 220.00000000000003,
+            "source": "Sintetično 50 EUR/m za štiri roke; ne določa materiala ali nosilnosti."
+          },
+          {
+            "category": "base_and_deck",
+            "price_kind": "synthetic",
+            "amount_EUR": 300.0,
+            "source": "Sintetičen učni pavšal."
+          },
+          {
+            "category": "cylinder",
+            "price_kind": "synthetic",
+            "amount_EUR": 350.0,
+            "source": "Sintetičen učni pavšal; potreben hod in sila še ne določata dobavnega artikla."
+          },
+          {
+            "category": "hydraulic_unit",
+            "price_kind": "unknown",
+            "amount_EUR": null,
+            "source": "Manjkajo dejanski pretok, pogon in ponudba."
+          },
+          {
+            "category": "assembly",
+            "price_kind": "synthetic",
+            "amount_EUR": 250.0,
+            "source": "Sintetičen učni pavšal."
+          },
+          {
+            "category": "safety_and_verification",
+            "price_kind": "unknown",
+            "amount_EUR": null,
+            "source": "Manjkajo analiza tveganja, dokumentacija in obseg preverjanj."
+          }
+        ],
+        "synthetic_subtotal_EUR": 1120.0,
+        "total_EUR": null,
+        "basis": "Nepopoln sintetičen vmesni seštevek, brez DDV in dobaviteljskih ponudb.",
+        "units": {
+          "length": "mm",
+          "force": "N",
+          "pressure": "bar",
+          "flow": "L/min",
+          "power": "kW",
+          "currency": "EUR"
+        },
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae"
+      },
+      "calculations": [
+        {
+          "quantity": "synthetic_subtotal_EUR",
+          "value": 1120.0,
+          "unit": "EUR"
+        }
+      ],
+      "cost_items": [
+        {
+          "category": "arms",
+          "price_kind": "synthetic",
+          "amount_EUR": 220.00000000000003,
+          "source": "Sintetično 50 EUR/m za štiri roke; ne določa materiala ali nosilnosti."
+        },
+        {
+          "category": "base_and_deck",
+          "price_kind": "synthetic",
+          "amount_EUR": 300.0,
+          "source": "Sintetičen učni pavšal."
+        },
+        {
+          "category": "cylinder",
+          "price_kind": "synthetic",
+          "amount_EUR": 350.0,
+          "source": "Sintetičen učni pavšal; potreben hod in sila še ne določata dobavnega artikla."
+        },
+        {
+          "category": "hydraulic_unit",
+          "price_kind": "unknown",
+          "amount_EUR": null,
+          "source": "Manjkajo dejanski pretok, pogon in ponudba."
+        },
+        {
+          "category": "assembly",
+          "price_kind": "synthetic",
+          "amount_EUR": 250.0,
+          "source": "Sintetičen učni pavšal."
+        },
+        {
+          "category": "safety_and_verification",
+          "price_kind": "unknown",
+          "amount_EUR": null,
+          "source": "Manjkajo analiza tveganja, dokumentacija in obseg preverjanj."
+        }
+      ]
+    },
+    "recenzent": {
+      "simulated": true,
+      "handoff_label": "V01-R01",
+      "assumptions": [
+        "Sintetičen učni primer; izračuni niso preverjeni."
+      ],
+      "trace": {
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae",
+        "handoff_sha256": "2e73df754705a29f0f7c5f408a0e1efa320ea34f22d47b9dbecef26539db65c7",
+        "mode": "simulated"
+      },
+      "decision": "changes_required",
+      "findings": [
+        {
+          "id": "R01",
+          "severity": "major",
+          "status": "open",
+          "target_agent": "konstruktor",
+          "description": "Preveri napetosti, uklon rok, sornike, drsnike, zvare, stabilnost in nesrediščno obremenitev.",
+          "required_correction": "Preveri napetosti, uklon rok, sornike, drsnike, zvare, stabilnost in nesrediščno obremenitev."
+        },
+        {
+          "id": "R02",
+          "severity": "major",
+          "status": "open",
+          "target_agent": "hidravlik",
+          "description": "Preveri vgradno dolžino in uklon batnice, pretok, ventile, tlačne izgube ter varno spuščanje.",
+          "required_correction": "Preveri vgradno dolžino in uklon batnice, pretok, ventile, tlačne izgube ter varno spuščanje."
+        },
+        {
+          "id": "R03",
+          "severity": "major",
+          "status": "open",
+          "target_agent": "ekonomist",
+          "description": "Pridobi preverljive ponudbe in ovrednoti neznane stroške.",
+          "required_correction": "Pridobi preverljive ponudbe in ovrednoti neznane stroške."
+        }
+      ],
+      "reviewed_agents": [
+        "konstruktor",
+        "hidravlik",
+        "ekonomist"
+      ],
+      "next_revision": "R02",
+      "summary": "Učni cikel zaključen; odprta vprašanja zahtevajo novo revizijo.",
+      "engineering_verified": false,
+      "technical_status": "changes_required",
+      "engineering": {
+        "status": "changes_required",
+        "engineering_verified": false,
+        "checks": [
+          {
+            "check": "parametri in predpostavke sledijo vhodom",
+            "target_agent": "konstruktor",
+            "status": "pass"
+          },
+          {
+            "check": "enote geometrije in hidravlike",
+            "target_agent": "konstruktor",
+            "status": "pass"
+          },
+          {
+            "check": "prečna razporeditev",
+            "target_agent": "konstruktor",
+            "status": "pass"
+          },
+          {
+            "check": "višina in dvig",
+            "target_agent": "konstruktor",
+            "status": "pass"
+          },
+          {
+            "check": "dolžine rok, vpetja in položaji",
+            "target_agent": "konstruktor",
+            "status": "pass"
+          },
+          {
+            "check": "virtualno delo s končno diferenco",
+            "target_agent": "konstruktor",
+            "status": "pass"
+          },
+          {
+            "check": "hod in največja sila",
+            "target_agent": "konstruktor",
+            "status": "pass"
+          },
+          {
+            "check": "sled hidravlične predaje",
+            "target_agent": "hidravlik",
+            "status": "pass"
+          },
+          {
+            "check": "krivulja sile hidravlike",
+            "target_agent": "hidravlik",
+            "status": "pass"
+          },
+          {
+            "check": "premeri in enote bar/N/mm²",
+            "target_agent": "hidravlik",
+            "status": "pass"
+          },
+          {
+            "check": "brez časa ni pretoka ali moči",
+            "target_agent": "hidravlik",
+            "status": "pass"
+          },
+          {
+            "check": "sled stroškov",
+            "target_agent": "ekonomist",
+            "status": "pass"
+          },
+          {
+            "check": "izvor cen in nepopolna ocena",
+            "target_agent": "ekonomist",
+            "status": "pass"
+          }
+        ],
+        "findings": [
+          {
+            "id": "R01",
+            "severity": "major",
+            "status": "open",
+            "target_agent": "konstruktor",
+            "description": "Preveri napetosti, uklon rok, sornike, drsnike, zvare, stabilnost in nesrediščno obremenitev.",
+            "required_correction": "Preveri napetosti, uklon rok, sornike, drsnike, zvare, stabilnost in nesrediščno obremenitev."
+          },
+          {
+            "id": "R02",
+            "severity": "major",
+            "status": "open",
+            "target_agent": "hidravlik",
+            "description": "Preveri vgradno dolžino in uklon batnice, pretok, ventile, tlačne izgube ter varno spuščanje.",
+            "required_correction": "Preveri vgradno dolžino in uklon batnice, pretok, ventile, tlačne izgube ter varno spuščanje."
+          },
+          {
+            "id": "R03",
+            "severity": "major",
+            "status": "open",
+            "target_agent": "ekonomist",
+            "description": "Pridobi preverljive ponudbe in ovrednoti neznane stroške.",
+            "required_correction": "Pridobi preverljive ponudbe in ovrednoti neznane stroške."
+          }
+        ],
+        "calculation_check_passed": true,
+        "units": {
+          "length": "mm",
+          "force": "N",
+          "pressure": "bar",
+          "flow": "L/min",
+          "power": "kW",
+          "currency": "EUR"
+        },
+        "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae"
+      },
+      "calculations": [],
+      "cost_items": []
+    }
+  },
+  "open_questions": [
+    "Katere geometrijske omejitve veljajo za dejansko izvedbo?",
+    "Kakšna bosta geometrija vpetja in zahtevani čas dviga?",
+    "Katere stroškovne postavke naj zajame naslednja revizija?"
+  ],
+  "input_sources": {
+    "data_origin": "examples/V01-R01.json#sha256:83429cc3f9db1f1368fe45ca2a18b042952cb4b2ba2b0eb2ff4d35c67ee8c590",
+    "payload_kg": "examples/V01-R01.json#sha256:83429cc3f9db1f1368fe45ca2a18b042952cb4b2ba2b0eb2ff4d35c67ee8c590",
+    "platform_length_mm": "examples/V01-R01.json#sha256:83429cc3f9db1f1368fe45ca2a18b042952cb4b2ba2b0eb2ff4d35c67ee8c590",
+    "platform_width_mm": "examples/V01-R01.json#sha256:83429cc3f9db1f1368fe45ca2a18b042952cb4b2ba2b0eb2ff4d35c67ee8c590",
+    "min_height_mm": "examples/V01-R01.json#sha256:83429cc3f9db1f1368fe45ca2a18b042952cb4b2ba2b0eb2ff4d35c67ee8c590",
+    "max_height_mm": "examples/V01-R01.json#sha256:83429cc3f9db1f1368fe45ca2a18b042952cb4b2ba2b0eb2ff4d35c67ee8c590",
+    "purpose": "examples/V01-R01.json#sha256:83429cc3f9db1f1368fe45ca2a18b042952cb4b2ba2b0eb2ff4d35c67ee8c590"
+  }
+}

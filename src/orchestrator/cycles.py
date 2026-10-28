@@ -68,11 +68,16 @@ class CycleRunner:
                     on_step=checkpoint, should_stop=lambda: (self.directory / "STOP").exists())
                 record["status"] = "awaiting_approval"
                 record["review_decision"] = result.results["recenzent"]["decision"]
+                record["engineering_verified"] = False
+                record["technical_status"] = result.results["recenzent"].get("technical_status", "not_evaluated")
                 record["finished_at"] = now()
                 save()
                 return result
-            except BaseException:
+            except BaseException as exc:
                 record["status"] = "stopped"
+                from src.engineering.calculations import EngineeringError
+                if isinstance(exc, EngineeringError):
+                    record["error"] = {"code": exc.code, "description": str(exc)}
                 record["finished_at"] = now()
                 # Persist partial results, never raw exceptions or credentials.
                 save()

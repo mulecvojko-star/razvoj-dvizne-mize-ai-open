@@ -28,14 +28,24 @@ def handoff(revision="R01"):
 
 
 def answer(name, incoming):
-    return {"variant": incoming.variant, "revision": incoming.revision, "agent": name,
+    data = {"variant": incoming.variant, "revision": incoming.revision, "agent": name,
             "summary": f"Pregled: {name}", "assumptions": ["Sintetični podatki."],
             "outputs": [{"name": "ocena", "value": "nepreverjeno", "unit": "n/a",
                          "basis": "Učni primer."}], "open_questions": [f"Vprašanje {name}"],
             "decision": "changes_required" if name == "recenzent" else "not_applicable",
-            "findings": [{"id": "F1", "severity": "critical", "status": "open",
+            "findings": [{"id": "F1", "target_agent": "konstruktor", "severity": "critical", "status": "open",
                           "description": "Manjka geometrija.",
                           "required_correction": "Dopolni geometrijo."}] if name == "recenzent" else []}
+
+
+    from src.engineering.contracts import claims, reference
+    expected = reference(incoming, name) if len(incoming.results) == ORDER.index(name) else None
+    data["calculations"] = claims(name, expected)
+    data["cost_items"] = expected["cost_items"] if name == "ekonomist" and expected else []
+    if name == "recenzent" and expected:
+        data["decision"] = expected["status"]
+        data["findings"] = expected["findings"]
+    return data
 
 
 class FakeTransport:
