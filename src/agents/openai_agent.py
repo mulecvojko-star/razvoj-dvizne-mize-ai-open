@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 
 from src.models import Handoff
+from src.engineering.contracts import reference, claims, validate_claims
 from src.models.contracts import (ORDER, RESPONSE_SCHEMA, digest, validate_inputs,
                                   validate_review, validate_schema)
 
@@ -81,11 +82,16 @@ class OpenAIAgent:
             "id, severity, status, description ter required_correction. Odprte ugotovitve "
             "zahtevajo changes_required ali blocked. Ne zaganjaj naslednje revizije."
         )
+        engineering = reference(handoff, self.name)
+        instructions += "\nDeterministično izračunana preliminarna predaja (ni potrditev varnosti): " + json.dumps(engineering, ensure_ascii=False)
+        instructions += "\nV calculations vrni vse in samo te količine s preverjenimi vrednostmi in enotami: " + json.dumps(claims(self.name, engineering))
+        instructions += "\nV cost_items ekonomist vrne priložene sintetične/neznane postavke, drugi []. Recenzent mora odprta tveganja vrniti odgovornim target_agent; ne odobri nepreverjene variante."
         data, metadata = self.transport.generate(instructions, handoff)
         validate_schema(data, RESPONSE_SCHEMA)
         if (data["variant"], data["revision"], data["agent"]) != (
                 handoff.variant, handoff.revision, self.name):
             raise ModelError("AI-odgovor ima napačno identiteto predaje ali agenta.")
+        validate_claims(self.name, data, engineering)
         if self.name == "recenzent":
             validate_review(data)
         elif data["decision"] != "not_applicable" or data["findings"]:
@@ -96,6 +102,9 @@ class OpenAIAgent:
                             "handoff_sha256": digest(handoff.to_dict()),
                             "instructions_sha256": digest(instructions),
                             "created_at": datetime.now(timezone.utc).isoformat()}}
+        result["technical_status"] = "not_evaluated" if engineering is None else engineering["status"]
+        if engineering is not None:
+            result["engineering"] = engineering
         return handoff.with_result(self.name, result, data["open_questions"])
 
 

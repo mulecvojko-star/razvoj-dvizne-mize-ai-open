@@ -4,6 +4,7 @@ from copy import deepcopy
 from typing import Callable, Protocol, Sequence
 
 from src.models.contracts import validate_review
+from src.engineering.contracts import validate_stage
 
 from src.agents.simulated import ORDER, default_agents
 from src.models import Handoff
@@ -48,6 +49,7 @@ class Orchestrator:
                 raise ValueError("Agent je spremenil že predane rezultate.")
             if output.open_questions[:len(current.open_questions)] != current.open_questions:
                 raise ValueError("Agent je odstranil ali spremenil odprta vprašanja.")
+            validate_stage(current, agent.name, output.results[agent.name])
             if agent.name == "recenzent":
                 validate_review(output.results[agent.name])
             current = deepcopy(output)

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from src.models.contracts import ORDER, digest
 
 from src.models import Handoff
+from src.engineering.contracts import reference, claims
 
 
 
@@ -39,13 +40,28 @@ class SimulatedAgent:
             questions = ["Katere stroškovne postavke naj zajame naslednja revizija?"]
         else:
             result = {"decision": "changes_required",
-                      "findings": [{"id": "F01", "severity": "major", "status": "open",
+                      "findings": [{"id": "F01", "target_agent": "konstruktor", "severity": "major", "status": "open",
                                     "description": "Geometrija in izračuni niso preverjeni.",
                                     "required_correction": "Dopolni geometrijo in strokovno preveri izračune."}],
                       "reviewed_agents": list(handoff.results),
                       "next_revision": f"R{int(handoff.revision[1:]) + 1:02d}",
                       "summary": "Učni cikel zaključen; odprta vprašanja zahtevajo novo revizijo."}
             questions = []
+        engineering = reference(handoff, self.name)
+        result["engineering_verified"] = False
+        result["technical_status"] = "not_evaluated" if engineering is None else engineering["status"]
+        if engineering is not None:
+            result["engineering"] = engineering
+            result["calculations"] = claims(self.name, engineering)
+            result["cost_items"] = engineering["cost_items"] if self.name == "ekonomist" else []
+            if self.name == "konstruktor":
+                common["assumptions"] = engineering["assumptions"]
+            if self.name == "ekonomist":
+                result["synthetic_total"] = engineering["synthetic_subtotal_EUR"]
+                result["basis"] = engineering["basis"]
+            if self.name == "recenzent":
+                result["decision"] = engineering["status"]
+                result["findings"] = engineering["findings"]
         return handoff.with_result(self.name, common | result, questions)
 
 

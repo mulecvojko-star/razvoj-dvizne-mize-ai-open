@@ -42,15 +42,21 @@ def obj(properties):
 STRING = {"type": "string"}
 STRINGS = {"type": "array", "items": STRING}
 FINDING = obj({
-    "id": STRING,
+    "id": STRING, "target_agent": {"type": "string", "enum": list(ORDER)},
     "severity": {"type": "string", "enum": ["info", "minor", "major", "critical"]},
     "status": {"type": "string", "enum": ["open", "resolved"]},
     "description": STRING,
     "required_correction": STRING,
 })
+CALCULATION = obj({"quantity": STRING, "value": {"type": "number"}, "unit": STRING})
+COST_ITEM = obj({"category": STRING,
+                 "price_kind": {"type": "string", "enum": ["verified", "synthetic", "unknown"]},
+                 "amount_EUR": {"anyOf": [{"type": "number"}, {"type": "null"}]}, "source": STRING})
 RESPONSE_SCHEMA = obj({
     "variant": STRING, "revision": STRING, "agent": {"type": "string", "enum": list(ORDER)},
     "summary": STRING, "assumptions": STRINGS, "open_questions": STRINGS,
+    "calculations": {"type": "array", "items": CALCULATION},
+    "cost_items": {"type": "array", "items": COST_ITEM},
     "outputs": {"type": "array", "items": obj({
         "name": STRING, "value": STRING, "unit": STRING, "basis": STRING})},
     "decision": {"type": "string", "enum": ["not_applicable", "accepted", "changes_required", "blocked"]},
@@ -60,7 +66,19 @@ RESPONSE_SCHEMA = obj({
 
 def validate_schema(value, schema):
     """Validate the small JSON Schema subset used by this application locally too."""
+    if "anyOf" in schema:
+        for option in schema["anyOf"]:
+            try:
+                validate_schema(value, option)
+                return
+            except ValueError:
+                pass
+        raise ValueError("Vrednost ne ustreza nobeni dovoljeni vrsti.")
     kind = schema["type"]
+    if kind == "number" and (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)):
+        raise ValueError("Pričakovano je končno število z enoto.")
+    if kind == "null" and value is not None:
+        raise ValueError("Pričakovana je nedoločena vrednost null.")
     if kind == "object":
         if not isinstance(value, dict) or set(value) != set(schema["properties"]):
             raise ValueError("Odgovor nima zahtevanih polj ali vsebuje dodatna polja.")

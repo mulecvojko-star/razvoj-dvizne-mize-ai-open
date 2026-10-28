@@ -8,6 +8,15 @@ strukturiranim JSON odgovorom. Vsak zagon izvede največ en izrecno odobren cike
 Uporabljaj samo sintetične ali javne podatke. Rezultati modelov in simulacije niso
 strokovna potrditev dimenzioniranja, varnosti, skladnosti ali stroškov naprave.
 
+## Preliminarna inženirska varianta
+
+Naloga 04 dodaja determinističen izračun škarjaste geometrije, hoda in sile
+cilindra, primerjavo hidravlike ter neodvisne numerične kontrole recenzenta.
+Glej [tehnični opis V01-R01](docs/engineering-V01-R01.md) in
+[celoten sintetični rezultat](examples/V01-R01-engineering-result.json).
+Izračuni niso potrditev varnosti: pregled ostane `changes_required`,
+`engineering_verified=false`, nedoločeni podatki pa `null`.
+
 ## Zagon iz oblaka ali telefona Android
 
 Za ročni preizkus enega cikla glej [navodila za Android](docs/android-ai-trial.md).
@@ -124,6 +133,7 @@ src/
   models/
     handoff.py         Handoff: identiteta, vhodi, viri, rezultati, vprašanja
     contracts.py       JSON shema, validacija vhodov in recenzije, SHA-256
+  engineering/         deterministična geometrija, hidravlika, stroški in neodvisni pregled
   orchestrator/
     pipeline.py        primitiven enkratni zaporedni izvajalnik
     cycles.py          odobritve, revizije, zaklep in shranjevanje delnih rezultatov
@@ -151,7 +161,7 @@ pred klicem modela. CLI ob odsotnosti `input_sources` doda ime in SHA-256 izvorn
 datoteke za vsako polje; navedene vire ohrani. Izvor je navedba uporabnika, ne preverba
 verodostojnosti javnega vira ali samodejno prepoznavanje zaupnih podatkov.
 
-AI-odgovor vsebuje identiteto, `summary`, seznam `assumptions`, `outputs`
+AI-odgovor vsebuje identiteto, `summary`, seznam `assumptions`, `calculations`, `cost_items`, `outputs`
 (`name`, `value`, `unit`, `basis`), `open_questions`, `decision` in `findings`.
 Rezultatu adapter lokalno doda `trace`: hash vhodov, celotne prejete predaje in
 navodil, ime modela, ID odgovora, čas ter porabo vhodnih/izhodnih tokenov.
@@ -160,7 +170,7 @@ v `src/models/contracts.py`; dodatna polja v modelskem odgovoru niso dovoljena.
 
 Recenzent vrne odločitev `accepted`, `changes_required` ali `blocked`. Vsaka
 ugotovitev vsebuje enolični `id`, `severity` (`info`, `minor`, `major`, `critical`),
-`status` (`open`, `resolved`), opis in neprazno zahtevo `required_correction`.
+`status` (`open`, `resolved`), `target_agent`, opis in neprazno zahtevo `required_correction`.
 Odprte ugotovitve preprečijo `accepted`. Zahteva za popravke potrebuje vsaj eno
 odprto ugotovitev. Tudi sprejet rezultat ostane `engineering_verified=False`.
 Napaka API-ja, zavrnitev modela, nepopoln odgovor ali neveljavna pogodba ustavi cikel;
