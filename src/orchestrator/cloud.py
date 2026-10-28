@@ -17,7 +17,7 @@ from .cycles import CycleRunner
 from .pipeline import Orchestrator
 
 EXAMPLE = Path(__file__).resolve().parents[2] / "examples" / "V01-R01.json"
-MODELS = ("gpt-4.1-mini", "gpt-4.1-nano")
+MODELS = ("gpt-4.1-mini", "gpt-4.1-nano", "gpt-5.4-mini")
 APPROVALS = {"simulated": "ODOBRIM SIMULACIJO V01-R01", "openai": "ODOBRIM AI V01-R01"}
 
 
