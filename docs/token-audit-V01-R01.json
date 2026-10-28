@@ -1,0 +1,352 @@
+{
+  "kind": "offline_estimate_not_billing",
+  "method": "UTF-8 bytes / 4 to bytes / 2.5",
+  "limitations": [
+    "Hevrističen planski razpon, ne tokenizer in ne jamstvo zgornje meje.",
+    "Ovojnica API-ja, reasoning in nevidni izhodni tokeni niso vključeni.",
+    "Predaje vsebujejo sintetične odgovore; dejanska poraba in velikost lahko odstopata."
+  ],
+  "compact_synthetic": {
+    "agents": [
+      {
+        "agent": "konstruktor",
+        "prompt_bytes": 14192,
+        "input_token_estimate_range": [
+          3547,
+          5678
+        ],
+        "output_text_token_estimate_range": [
+          435,
+          696
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 10997,
+            "token_estimate_range": [
+              2749,
+              4399
+            ]
+          },
+          "handoff": {
+            "bytes": 1118,
+            "token_estimate_range": [
+              279,
+              448
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      },
+      {
+        "agent": "hidravlik",
+        "prompt_bytes": 19027,
+        "input_token_estimate_range": [
+          4756,
+          7611
+        ],
+        "output_text_token_estimate_range": [
+          296,
+          475
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 6145,
+            "token_estimate_range": [
+              1536,
+              2458
+            ]
+          },
+          "handoff": {
+            "bytes": 10805,
+            "token_estimate_range": [
+              2701,
+              4322
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      },
+      {
+        "agent": "ekonomist",
+        "prompt_bytes": 21651,
+        "input_token_estimate_range": [
+          5412,
+          8661
+        ],
+        "output_text_token_estimate_range": [
+          352,
+          564
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 4057,
+            "token_estimate_range": [
+              1014,
+              1623
+            ]
+          },
+          "handoff": {
+            "bytes": 15517,
+            "token_estimate_range": [
+              3879,
+              6207
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      },
+      {
+        "agent": "recenzent",
+        "prompt_bytes": 26245,
+        "input_token_estimate_range": [
+          6560,
+          10499
+        ],
+        "output_text_token_estimate_range": [
+          340,
+          545
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 5121,
+            "token_estimate_range": [
+              1280,
+              2049
+            ]
+          },
+          "handoff": {
+            "bytes": 19047,
+            "token_estimate_range": [
+              4761,
+              7619
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      }
+    ],
+    "input_token_estimate_range": [
+      20275,
+      32449
+    ],
+    "output_text_token_estimate_range": [
+      1423,
+      2280
+    ],
+    "maximum_prompt_bytes": 26245
+  },
+  "historical_observed": {
+    "run_id": "40781898486",
+    "commit": "3eaea55931521653d1e288ca0b5ace76ec8f619e",
+    "configuration": {
+      "mode": "openai",
+      "model": "gpt-5.4-mini",
+      "max_output_tokens": 1500,
+      "max_prompt_bytes": 48000,
+      "approval": "ODOBRIM AI V01-R01"
+    },
+    "agents": {
+      "konstruktor": {
+        "model": "gpt-5.4-mini-2026-03-17",
+        "input_tokens": 1142,
+        "output_tokens": 933,
+        "reasoning_tokens": null
+      },
+      "hidravlik": {
+        "model": "gpt-5.4-mini-2026-03-17",
+        "input_tokens": 2629,
+        "output_tokens": 933,
+        "reasoning_tokens": null
+      },
+      "ekonomist": {
+        "model": "gpt-5.4-mini-2026-03-17",
+        "input_tokens": 4168,
+        "output_tokens": 1293,
+        "reasoning_tokens": null
+      },
+      "recenzent": {
+        "model": "gpt-5.4-mini-2026-03-17",
+        "input_tokens": 6083,
+        "output_tokens": 1063,
+        "reasoning_tokens": null
+      }
+    }
+  },
+  "historical_prose_with_current_contract": {
+    "agents": [
+      {
+        "agent": "konstruktor",
+        "prompt_bytes": 14192,
+        "input_token_estimate_range": [
+          3547,
+          5678
+        ],
+        "output_text_token_estimate_range": [
+          994,
+          1592
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 10997,
+            "token_estimate_range": [
+              2749,
+              4399
+            ]
+          },
+          "handoff": {
+            "bytes": 1118,
+            "token_estimate_range": [
+              279,
+              448
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      },
+      {
+        "agent": "hidravlik",
+        "prompt_bytes": 22056,
+        "input_token_estimate_range": [
+          5513,
+          8823
+        ],
+        "output_text_token_estimate_range": [
+          942,
+          1508
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 6145,
+            "token_estimate_range": [
+              1536,
+              2458
+            ]
+          },
+          "handoff": {
+            "bytes": 13834,
+            "token_estimate_range": [
+              3458,
+              5534
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      },
+      {
+        "agent": "ekonomist",
+        "prompt_bytes": 28093,
+        "input_token_estimate_range": [
+          7022,
+          11238
+        ],
+        "output_text_token_estimate_range": [
+          1411,
+          2259
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 4057,
+            "token_estimate_range": [
+              1014,
+              1623
+            ]
+          },
+          "handoff": {
+            "bytes": 21959,
+            "token_estimate_range": [
+              5489,
+              8784
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      },
+      {
+        "agent": "recenzent",
+        "prompt_bytes": 37606,
+        "input_token_estimate_range": [
+          9401,
+          15044
+        ],
+        "output_text_token_estimate_range": [
+          959,
+          1535
+        ],
+        "parts": {
+          "instructions": {
+            "bytes": 5121,
+            "token_estimate_range": [
+              1280,
+              2049
+            ]
+          },
+          "handoff": {
+            "bytes": 30408,
+            "token_estimate_range": [
+              7602,
+              12164
+            ]
+          },
+          "schema": {
+            "bytes": 2077,
+            "token_estimate_range": [
+              519,
+              831
+            ]
+          }
+        }
+      }
+    ],
+    "input_token_estimate_range": [
+      25483,
+      40783
+    ],
+    "output_text_token_estimate_range": [
+      4306,
+      6894
+    ],
+    "maximum_prompt_bytes": 37606
+  }
+}

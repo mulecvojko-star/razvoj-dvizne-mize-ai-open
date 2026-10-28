@@ -17,9 +17,29 @@ on:
         default: gpt-4.1-mini
         required: true
       max_output_tokens:
-        description: 'Najvec izhodnih tokenov na agenta: 256-4000 (ni financna meja)'
+        description: 'Skupna privzeta meja: 256-4000; uporabi se ob agentovi nastavitvi 0'
         type: number
         default: 1500
+        required: true
+      constructor_max_output_tokens:
+        description: 'Konstruktor: izhodni tokeni 256-4000; 0 uporabi skupno mejo'
+        type: number
+        default: 2500
+        required: true
+      hydraulics_max_output_tokens:
+        description: 'Hidravlik: izhodni tokeni 256-4000; 0 uporabi skupno mejo'
+        type: number
+        default: 2500
+        required: true
+      economics_max_output_tokens:
+        description: 'Ekonomist: izhodni tokeni 256-4000; 0 uporabi skupno mejo'
+        type: number
+        default: 3000
+        required: true
+      reviewer_max_output_tokens:
+        description: 'Recenzent: izhodni tokeni 256-4000; 0 uporabi skupno mejo'
+        type: number
+        default: 3500
         required: true
       max_prompt_bytes:
         description: 'Najvec bajtov poziva na agenta (ni stevilo tokenov)'
@@ -43,6 +63,10 @@ env:
   TRIAL_MODE: ${{ inputs.mode }}
   TRIAL_MODEL: ${{ inputs.model }}
   TRIAL_MAX_OUTPUT_TOKENS: ${{ inputs.max_output_tokens }}
+  TRIAL_MAX_OUTPUT_TOKENS_KONSTRUKTOR: ${{ inputs.constructor_max_output_tokens }}
+  TRIAL_MAX_OUTPUT_TOKENS_HIDRAVLIK: ${{ inputs.hydraulics_max_output_tokens }}
+  TRIAL_MAX_OUTPUT_TOKENS_EKONOMIST: ${{ inputs.economics_max_output_tokens }}
+  TRIAL_MAX_OUTPUT_TOKENS_RECENZENT: ${{ inputs.reviewer_max_output_tokens }}
   TRIAL_MAX_PROMPT_BYTES: ${{ inputs.max_prompt_bytes }}
   TRIAL_APPROVAL: ${{ inputs.approval }}
 
