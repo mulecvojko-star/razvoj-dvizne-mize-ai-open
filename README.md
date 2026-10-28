@@ -8,6 +8,14 @@ strukturiranim JSON odgovorom. Vsak zagon izvede največ en izrecno odobren cike
 Uporabljaj samo sintetične ali javne podatke. Rezultati modelov in simulacije niso
 strokovna potrditev dimenzioniranja, varnosti, skladnosti ali stroškov naprave.
 
+## Zagon iz oblaka ali telefona Android
+
+Za ročni preizkus enega cikla glej [navodila za Android](docs/android-ai-trial.md).
+Workflow **En AI preizkus (rocno)** je privzeto simuliran, nima samodejnih sprožilcev
+in rezultate shrani kot 7-dnevni artifact. Dejanski način zahteva ločeno odobritev
+in skrivnost okolja `ai-trial`. Trda finančna meja ni zagotovljena. Na voljo bo po
+združitvi naloge 03 v `main`.
+
 ## Zagon simulacije
 
 Potrebuješ Python 3.11+ in Git. Simulacija nima zunanjih izvajalnih odvisnosti.
@@ -15,8 +23,6 @@ Potrebuješ Python 3.11+ in Git. Simulacija nima zunanjih izvajalnih odvisnosti.
 ```sh
 git clone https://github.com/mulecvojko-star/razvoj-dvizne-mize-ai-open.git
 cd razvoj-dvizne-mize-ai-open
-# Dokler PR naloge 02 ni združen:
-git switch naloga-02-ai-agenti
 python -m unittest discover -s tests -v
 python -m src.orchestrator examples/V01-R01.json --approve-cycle V01-R01
 ```
@@ -122,6 +128,7 @@ src/
     pipeline.py        primitiven enkratni zaporedni izvajalnik
     cycles.py          odobritve, revizije, zaklep in shranjevanje delnih rezultatov
     __main__.py        CLI z izbiro načina
+    cloud.py           ročni sintetični oblačni preizkus in preverjanje brez API-ja
 ```
 
 Vsak agent dobi kopijo celotne predaje. Naslednji vidi vse prejšnje rezultate,
