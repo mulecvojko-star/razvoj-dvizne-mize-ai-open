@@ -76,6 +76,9 @@ class CycleRunner:
             except BaseException as exc:
                 record["status"] = "stopped"
                 from src.engineering.calculations import EngineeringError
+                from src.agents.openai_agent import ModelError
+                if isinstance(exc, ModelError):
+                    record["error"] = {"code": exc.code}
                 if isinstance(exc, EngineeringError):
                     record["error"] = {"code": exc.code, "description": str(exc)}
                 record["finished_at"] = now()

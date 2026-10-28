@@ -12,7 +12,8 @@ Workflow se ne izvaja ob commitu, Pull Requestu ali po urniku.
    Če gumba ni, v Chromu odpri meni ⋮ → **Spletno mesto za namizne računalnike**
    (Desktop site). Preveri prijavo, dovoljenja in ali je workflow že na `main`.
 3. Izberi vejo **main**, način **simulated**, model pusti nespremenjen.
-   Privzeti omejitvi sta 1500 izhodnih tokenov in 48000 bajtov poziva na agenta.
+   Privzete izhodne meje so 2500/2500/3000/3500 tokenov za štiri agente;
+   poziv je omejen na 48000 bajtov na agenta.
    V simulaciji se model in API ne uporabljata.
 4. V polje **approval** vnesi točno `ODOBRIM SIMULACIJO V01-R01`.
    Nikoli ne vnašaj API-ključa v ta obrazec.
@@ -71,7 +72,9 @@ Pred začetkom preglej simulacijski artifact, omejitve in nastavitev skrivnosti.
 2. Izberi **openai** in model **gpt-4.1-mini**, **gpt-4.1-nano** ali **gpt-5.4-mini**. Za vse tri je
    pripravljena uporaba Responses API in Structured Outputs; dostopnost v tvojem
    računu ostaja nepreverjena. Privzeti model je `gpt-4.1-mini`.
-3. Izberi `max_output_tokens` (256–4000, privzeto 1500 na agenta) ter
+3. Preglej štiri ločene meje izhoda: Konstruktor 2500, Hidravlik 2500,
+   Ekonomist 3000, Recenzent 3500. Dovoljene so vrednosti 256–4000; vrednost 0
+   uporabi skupno rezervno `max_output_tokens` (privzeto 1500). Poziv omejuje
    `max_prompt_bytes` (16000, 32000 ali 48000; privzeto 48000).
 4. Samo če odobriš plačljive API-klice za ta en cikel, vnesi
    **`ODOBRIM AI V01-R01`** in pritisni **Run workflow**.
@@ -118,7 +121,7 @@ cenovno razlikuje od modelov GPT-4.1; pred odobritvijo preveri aktualni cenik.
 | Omejitev | Kaj zagotavlja |
 | --- | --- |
 | Največ 4 zahteve | En klic na agenta, brez ponavljanja ali novih ciklov |
-| `max_output_tokens` | API-omejitev izhodnih tokenov na zahtevo; privzeto skupaj največ 6000 |
+| Štiri meje izhodnih tokenov | API-meja na zahtevo; privzeto 2500/2500/3000/3500, skupaj največ 11500 |
 | `max_prompt_bytes` | Pred vsako zahtevo preveri vsoto UTF-8 bajtov navodil, JSON predaje in JSON sheme |
 | SDK timeout 60 s | Časovna omejitev prenosa; ni finančna omejitev |
 | Workflow timeout 10 min | Omeji trajanje AI-opravila, vključno z namestitvijo in nalaganjem |
@@ -138,8 +141,9 @@ nizke omejitve in po potrebi ključ po zaključku prekliči.
 
 Ocena po aktualnem ceniku je `(vhodni tokeni × cena vhoda + izhodni tokeni × cena
 izhoda) / 1.000.000`, kadar sta ceni podani za milijon tokenov. `report.json`
-sešteva samo porabo, ki jo vrnejo uspešni odgovori. Neuspeh, zavrnitev ali časovna
-omejitev ima lahko stroške, ki niso vključeni v to poročilo; to ni račun.
+sešteva porabo vseh razpoložljivih odgovorov, tudi nepopolnih. Poskusi brez usage
+so posebej označeni; neuspeh ali časovna omejitev ima lahko dodatne neznane stroške.
+Poročilo ni račun. Glej [preverjanje pripravljenosti 04A](readiness-V01-R01.md).
 
 ## Artifacti, podatki in ponovljivost
 

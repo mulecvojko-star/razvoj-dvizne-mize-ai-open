@@ -8,6 +8,16 @@ strukturiranim JSON odgovorom. Vsak zagon izvede največ en izrecno odobren cike
 Uporabljaj samo sintetične ali javne podatke. Rezultati modelov in simulacije niso
 strokovna potrditev dimenzioniranja, varnosti, skladnosti ali stroškov naprave.
 
+## Pripravljenost za plačljivi preizkus
+
+[Poročilo naloge 04A](docs/readiness-V01-R01.md) loči dejansko staro porabo od
+ocen novega cikla. Ročni cloud workflow omogoča ločene izhodne meje 2500/2500/3000/3500
+za Konstruktorja, Hidravlika, Ekonomista in Recenzenta. Limit poziva ostaja 48000
+bajtov. Večja meja izhoda ni zagotovilo zaključka cikla ali trda finančna meja.
+`report.json` ohrani varne kode napak in razpoložljivo porabo tudi pri nepopolnem
+odgovoru. Ocenjevalnik `python -m src.orchestrator.token_audit --output /tmp/audit.json`
+ne kliče modelov in ne potrebuje ključa.
+
 ## Preliminarna inženirska varianta
 
 Naloga 04 dodaja determinističen izračun škarjaste geometrije, hoda in sile
