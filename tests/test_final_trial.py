@@ -29,12 +29,15 @@ class FrozenDate(RealDate):
 # Offline pricing arithmetic is tested at the recorded verification date,
 # independent of the date CI happens to execute. Runtime expiry remains enforced.
 _clock_patch=None
+_environment_patch=None
 
 def setUpModule():
-    global _clock_patch
+    global _clock_patch,_environment_patch
     _clock_patch=patch('src.final_trial.budget.date',FrozenDate);_clock_patch.start()
+    _environment_patch=patch.dict(os.environ,{'GITHUB_ACTIONS':'false'});_environment_patch.start()
 
-def tearDownModule():_clock_patch.stop()
+def tearDownModule():
+    _environment_patch.stop();_clock_patch.stop()
 
 
 ROOT=Path(__file__).resolve().parents[1]
