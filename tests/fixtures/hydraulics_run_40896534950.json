@@ -1,0 +1,252 @@
+{
+  "provenance": {
+    "run_id": "40896534950",
+    "artifact_id": 12905994418,
+    "artifact_sha256": "2789c83f6f665abdd92bde454c99314149ff0a5c4b10b177901d252b81e88a79",
+    "commit": "898aaaba4a39f129af56e6b698bd80df68f835ae",
+    "response_sha256": "ad41d3e74df67117e238bd7b905a75917d13959f72d5e761c19e32d554ecdc29"
+  },
+  "response": {
+    "result": {
+      "variant": "V01",
+      "revision": "R01",
+      "agent": "hidravlik",
+      "summary": "Primerjava tlakov je izvedena na podlagi referenčne krivulje sile in kataloških podatkov. Izbran katalogski cilinder HYD-01 pri 200 bar ne doseže zahtevane idealne sile; čas dviga ni podan, zato pretok in moč ostaneta NI PODATKA.",
+      "assumptions": [
+        "Uporabljena je struktura konstruktorjeve predaje iste variante in revizije.",
+        "Prenesena je celotna referenčna krivulja sile po višini cilindra ter največja sila.",
+        "Za teoretične premere velja p[bar]*0.1 = p[N/mm²] in D = sqrt(4A/pi).",
+        "Kataloški cilinder se ocenjuje z njegovim dejanskim premerom, ne s teoretičnim premerom.",
+        "Brez lift_time_s ni dovoljeno določiti pretoka ali moči; moč na gredi ni določena brez izkoristka pogona.",
+        "Idealna sila ne potrjuje vgradnje, hoda, dejanskega izkoristka ali varnosti.",
+        "Varnostne funkcije je treba obravnavati v ločeni strokovni analizi tveganja."
+      ],
+      "open_questions": [
+        "NI PODATKA o času dviga REQ-09.",
+        "NI PODATKA o vgradni dolžini, mrtvih dolžinah in dejanskem hodu kataloškega cilindra HYD-01.",
+        "NI PODATKA o izkoristku pogona za določitev moči na gredi.",
+        "NI PODATKA o strokovni analizi tveganja in potrditvi varnostnih funkcij."
+      ],
+      "calculations": [
+        {
+          "quantity": "max_force_N",
+          "value": 64136.449795429005,
+          "unit": "N"
+        },
+        {
+          "quantity": "bore_160_bar_mm",
+          "value": 71.44100019354329,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_200_bar_mm",
+          "value": 63.898773125335374,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_250_bar_mm",
+          "value": 57.15280015483464,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_315_bar_mm",
+          "value": 50.915761160512346,
+          "unit": "mm"
+        }
+      ],
+      "cost_items": [],
+      "outputs": [
+        {
+          "name": "force_curve",
+          "value": "350 mm: 64136.45 N; 415 mm: 51181.70 N; 480 mm: 42648.84 N; 545 mm: 36566.28 N; 610 mm: 31960.94 N; 675 mm: 28292.54 N; 740 mm: 25231.63 N; 805 mm: 22558.92 N; 870 mm: 20112.82 N; 935 mm: 17756.30 N; 1000 mm: 15346.05 N",
+          "unit": "N",
+          "basis": "referenčna konstruktorjeva krivulja, source: CON-01/REV-02"
+        },
+        {
+          "name": "required_stroke",
+          "value": "143.08",
+          "unit": "mm",
+          "basis": "referenčna konstruktorjeva predaja; neznanka ni bila ponovno izračunana"
+        },
+        {
+          "name": "catalogue_choice",
+          "value": "HYD-01 / Cilinder C63 pri 200 bar",
+          "unit": "-",
+          "basis": "referenčna kataloška izbira iz hidravličnega predloga"
+        },
+        {
+          "name": "catalogue_capacity_check",
+          "value": "idealna sila 62344.91 N je manjša od zahtevane največje sile 64136.45 N; nominal_force_pass=false",
+          "unit": "N",
+          "basis": "katalog HYD-01 in referenčna sila"
+        },
+        {
+          "name": "pressure_comparison",
+          "value": "160 bar teoretični premer 71.44 mm; 200 bar 63.90 mm; 250 bar 57.15 mm; 315 bar 50.92 mm",
+          "unit": "mm",
+          "basis": "p[bar]*0.1 = p[N/mm²], teoretični izteg brez izgub"
+        },
+        {
+          "name": "flow_power",
+          "value": "NI PODATKA",
+          "unit": "-",
+          "basis": "lift_time_s manjka; pretok in moč nista določena"
+        },
+        {
+          "name": "safety_functions",
+          "value": "nosilni ventil pri cilindru, zaščita ob pretrgu cevi, omejitev tlaka, nadzor spuščanja, mehanska servisna opora, končna stikala, varovanje škarij, zaustavitev v sili; potrebna je strokovna analiza tveganja",
+          "unit": "-",
+          "basis": "HYD-07, HYD-08 in referenčna varnostna navodila"
+        }
+      ],
+      "decision": "not_applicable",
+      "findings": []
+    },
+    "source_ids": [
+      "REQ-01",
+      "REQ-02",
+      "REQ-03",
+      "REQ-04",
+      "REQ-05",
+      "REQ-06",
+      "REQ-09",
+      "REQ-10",
+      "REQ-11",
+      "GEO-01",
+      "CON-01",
+      "HYD-01",
+      "HYD-05",
+      "HYD-07",
+      "HYD-08",
+      "REV-02",
+      "REV-03",
+      "REV-04",
+      "REV-05",
+      "REV-07",
+      "REV-08",
+      "TEST-01",
+      "TEST-02",
+      "TEST-03",
+      "TEST-05"
+    ],
+    "proposal": null,
+    "selection": {
+      "cylinder_id": "HYD-01",
+      "pump_id": "HYD-05",
+      "pressure_bar": 200
+    },
+    "requests": [],
+    "request_updates": [
+      {
+        "request_id": "REQ-09",
+        "status": "unresolved",
+        "reason": "Čas dviga ni podan, zato pretok in moč ostajata NI PODATKA.",
+        "source_ids": [
+          "REV-04",
+          "TEST-02"
+        ]
+      },
+      {
+        "request_id": "REQ-10",
+        "status": "unresolved",
+        "reason": "Ekscentrična obremenitev ni določena; stabilnost ostaja odprta.",
+        "source_ids": [
+          "REV-05",
+          "TEST-03"
+        ]
+      },
+      {
+        "request_id": "REQ-11",
+        "status": "unresolved",
+        "reason": "Varnostna kategorija / standardna skladnost ni določena.",
+        "source_ids": [
+          "REV-07"
+        ]
+      },
+      {
+        "request_id": "REV-03",
+        "status": "unresolved",
+        "reason": "Izbira HYD-01 ni potrjena, ker nominal_force_pass=false in manjkata hod ter vgradna mera.",
+        "source_ids": [
+          "REV-03",
+          "TEST-01"
+        ]
+      }
+    ]
+  },
+  "observed_usage": {
+    "model": "gpt-5.4-mini",
+    "calls": [
+      {
+        "agent": "konstruktor",
+        "model": "gpt-5.4-mini",
+        "status": "completed",
+        "reserved_USD": 0.09075,
+        "input_tokens": 19129,
+        "output_tokens": 978,
+        "reasoning_tokens": 0,
+        "estimated_cost_USD": 0.01874775,
+        "revision": "R01",
+        "prompt_sha256": "e6e1594d0a7fe32769d597bd921557017a5f3c7e23fdaa99b8e316fe351f3d23",
+        "response_model": "gpt-5.4-mini-2026-03-17",
+        "accounted_USD": 0.01874775
+      },
+      {
+        "agent": "hidravlik",
+        "model": "gpt-5.4-mini",
+        "status": "completed",
+        "reserved_USD": 0.09075,
+        "input_tokens": 22309,
+        "output_tokens": 1340,
+        "reasoning_tokens": 0,
+        "estimated_cost_USD": 0.02276175,
+        "revision": "R01",
+        "prompt_sha256": "4133a10b527a4a08fa6ef04cf473cb4393f254a9b5fdf46558d90959099c88f1",
+        "response_model": "gpt-5.4-mini-2026-03-17",
+        "accounted_USD": 0.02276175
+      }
+    ],
+    "call_count": 2,
+    "per_agent": {
+      "konstruktor": {
+        "calls": 1,
+        "input_tokens": 19129,
+        "output_tokens": 978,
+        "estimated_cost_USD": 0.01874775
+      },
+      "hidravlik": {
+        "calls": 1,
+        "input_tokens": 22309,
+        "output_tokens": 1340,
+        "estimated_cost_USD": 0.02276175
+      },
+      "ekonomist": {
+        "calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "estimated_cost_USD": 0
+      },
+      "recenzent": {
+        "calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "estimated_cost_USD": 0
+      }
+    },
+    "input_tokens": 41438,
+    "output_tokens": 2318,
+    "estimated_cost_USD": 0.041509500000000005,
+    "reserved_exposure_USD": 0.1815,
+    "pricing": {
+      "model": "gpt-5.4-mini",
+      "input_per_million_USD": 0.75,
+      "output_per_million_USD": 4.5,
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+      "verified_on": "2026-10-29",
+      "valid_until": "2026-11-05",
+      "basis": "Standard text API; no cache discount; no regional uplift or tax included."
+    },
+    "threshold_USD": 3.0,
+    "warning": "Ocena po objavljenem standardnem ceniku, ne račun ali trda finančna omejitev."
+  }
+}

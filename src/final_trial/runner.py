@@ -127,7 +127,7 @@ class FinalRunner:
                     elif name=='ekonomist':expected=economics(h.inputs,h.results['konstruktor']['engineering'],h.results['hidravlik']['engineering'],kb)
                     else:expected=findings(h.inputs,*(h.results[n]['engineering'] for n in ORDER[:3]),kb)
                     instructions,payload=prompt(name,h,kb,expected,pending,state['messages'])
-                    response_schema=schema(kb,expected,name)
+                    response_schema=schema(kb,expected,name,requests=pending,handoff=h)
                     size=len(instructions.encode())+len(payload.encode())+len(json.dumps(response_schema,ensure_ascii=False).encode())
                     if size>budget.max_prompt_bytes or size+2048>budget.max_input_tokens:raise ValueError('Poziv presega odobreno vhodno omejitev.')
                     if transport:

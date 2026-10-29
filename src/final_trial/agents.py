@@ -3,27 +3,36 @@ from copy import deepcopy
 import json
 from pathlib import Path
 from src.agents.openai_agent import OpenAITransport
-from src.models.contracts import ORDER, RESPONSE_SCHEMA, STRING, STRINGS, obj, validate_schema, validate_review
+from src.models.contracts import ORDER, RESPONSE_SCHEMA, STRING, STRINGS, obj, validate_schema, validate_review, digest
 from src.engineering.contracts import claims, validate_claims, calculation_schema
 from src.engineering.costs import exact_cost_schema
 from src.engineering.calculations import EngineeringError
 
 
-def schema(kb, expected, name, *, constrain_calculations=True):
+def schema(kb, expected, name, *, constrain_calculations=True, requests=(), handoff=None, bind_messages=True):
     ids={'type':'array','items':{'type':'string','enum':sorted(kb['records'])},'minItems':1}
     base=deepcopy(RESPONSE_SCHEMA)
     if constrain_calculations:base["properties"]["calculations"]=calculation_schema(name,expected)
     if name=='ekonomist':base['properties']['cost_items']=exact_cost_schema(expected['cost_items'])
+    delivered=sorted({r['id'] for r in requests if r['target_agent']==name or name=='recenzent'})
+    if bind_messages:
+        base['properties']['agent']={'type':'string','enum':[name]}
+        base['properties']['decision']={'type':'string','enum':[expected['status'] if name=='recenzent' else 'not_applicable']}
+        if handoff:
+            for field in ('variant','revision'):base['properties'][field]={'type':'string','enum':[getattr(handoff,field)]}
+        if name!='recenzent':base['properties']['findings']['maxItems']=0
+        if name!='ekonomist':base['properties']['cost_items']['maxItems']=0
     proposal=obj({'parameter':STRING,'new_value':{'type':'number'},'request_id':STRING,'reason':STRING,
                   'objective':{'type':'string','enum':['reduce_peak_force']},'source_ids':ids})
     choice=obj({'cylinder_id':{'type':'string','enum':['HYD-01','HYD-02','HYD-03','HYD-04']},
                 'pump_id':{'type':'string','enum':['HYD-05','HYD-06']},'pressure_bar':{'type':'number','enum':[160,200,250,315]}})
     request=obj({'id':STRING,'target_agent':{'anyOf':[{'type':'string','enum':list(ORDER)},{'type':'null'}]},
                  'reason':STRING,'source_ids':ids,'correction':STRING,'objective':{'type':'string','enum':['reduce_peak_force','catalogue_capacity','manual_review']}})
-    return obj({'result':base,'source_ids':ids,'proposal':{'anyOf':[proposal,{'type':'null'}]} if name=='konstruktor' else {'type':'null'},
+    can_propose=name=='konstruktor' and (not bind_messages or any(r['target_agent']=='konstruktor' and r.get('objective')=='reduce_peak_force' and 'GEO-01' in r.get('source_ids',[]) for r in requests))
+    return obj({'result':base,'source_ids':ids,'proposal':{'anyOf':[proposal,{'type':'null'}]} if can_propose else {'type':'null'},
                 'selection':choice if name=='hidravlik' else {'type':'null'},
-                'requests':{'type':'array','items':request},
-                'request_updates':{'type':'array','items':obj({'request_id':STRING,'status':{'type':'string','enum':['addressed','unresolved']},'reason':STRING,'source_ids':ids})}})
+                'requests':{'type':'array','items':request,**({'maxItems':0} if bind_messages and name!='recenzent' else {})},
+                'request_updates':{'type':'array',**({'maxItems':0} if bind_messages and not delivered else {}),'items':obj({'request_id':{'type':'string','enum':delivered} if bind_messages and delivered else STRING,'status':{'type':'string','enum':['addressed','unresolved']},'reason':STRING,'source_ids':ids})}})
 
 
 def required_sources(name, expected, selection=None):
@@ -52,13 +61,20 @@ Konstruktor lahko predlaga en spremenljiv parameter le za konkretno prejeto nalo
 če ni utemeljene spremembe, proposal=null. Program bo ponovno izračunal in presodil predlog.
 Ohrani koncept CON-01, dve ravnini in en cilinder. Ne ustvarjaj V02.
 Hidravlik izbere selection iz kataloga ter preveri primerjave; idealna sila ne potrdi
-hoda, vgradnje, dejanskega izkoristka ali varnosti. Druge vloge imajo selection=null.
+hoda, vgradnje, dejanskega izkoristka ali varnosti. catalogue.choice je samo izhodiščni
+scenarij. Če katalog omogoča nominalno zadosten kandidat, izberi takega z dovoljenim
+tlakom cilindra in agregata, ne kopiraj nezadostnega izhodiščnega HYD-01.
+Manjkajoči hod/vgradnja/izkoristek ostanejo nepotrjeni. Druge vloge imajo selection=null.
 Ekonomist prepiše cost_items dobesedno iz priložene reference COST. Ne uporablja starih pavšalov.
 Recenzent mora v result.findings ohraniti odprta lokalna tveganja z odgovornimi agenti,
 vrniti changes_required in strukturirane requests. Ne potrdi neznanih podatkov.
 requests vrne samo Recenzent, drugi []. Vsak zahtevek ima objective: reduce_peak_force
 le za utemeljeno zmanjšanje sile, catalogue_capacity za napačno izbiro HYD ali manual_review
 za nepotrjene strukturne, vgradne, cenovne in varnostne podatke. request_updates smejo opisati le prejete naloge;
+ID iz baze znanja (REQ-09, REV-03, ...) sam po sebi ni prejeta naloga.
+Edini dovoljeni request_id so allowed_request_update_ids. Če je ta seznam prazen,
+vrni request_updates=[]; vprašanja iz baze sodijo v open_questions, ne med odgovore
+na neobstoječe zahtevke. To velja za vse štiri vloge, tudi za Recenzenta v R01.
 addressed ni dokaz zaprtja. Samo neodvisna kontrola programa zapre konkretno napako.
 Vsak povzetek naj bo kratek in v slovenščini. API-klicev ali novih revizij ne sprožaš sam.
 '''
@@ -67,14 +83,15 @@ Vsak povzetek naj bo kratek in v slovenščini. API-klicev ali novih revizij ne 
     payload={'variant':handoff.variant,'revision':handoff.revision,'agent':name,'handoff':handoff.to_dict(),
              'knowledge_base':{k:kb[k] for k in ('document','sha256','records','conflicts','reference_results')},'knowledge_paragraphs':[b for b in kb['blocks'] if b['type']=='paragraph'],'agent_rule_tables':[b for b in kb['blocks'] if b['type']=='table' and b['rows'] and b['rows'][0]['cells'][0]=='Agent'],'received_requests':[r for r in requests if r['target_agent']==name or name=='recenzent'],'messages':messages,
              'deterministic_reference':expected,'required_calculations':claims(name,expected),
-             'required_source_ids':sorted(required_sources(name,expected))}
+             'required_source_ids':sorted(required_sources(name,expected)),
+             'allowed_request_update_ids':sorted({r['id'] for r in requests if r['target_agent']==name or name=='recenzent'})}
     return instructions,json.dumps(payload,ensure_ascii=False,allow_nan=False,separators=(',',':'))
 
 
 def validate_response(data, name, handoff, kb, expected, requests):
     # Provider schema constrains names/units; validate the general numeric shape
     # locally first, then use the unchanged exact claim rules for useful diagnostics.
-    validate_schema(data,schema(kb,expected,name,constrain_calculations=False));base=data['result']
+    validate_schema(data,schema(kb,expected,name,constrain_calculations=False,bind_messages=False));base=data['result']
     if (base['variant'],base['revision'],base['agent'])!=(handoff.variant,handoff.revision,name):raise ValueError('Napačna identiteta odgovora.')
     validate_claims(name,base,expected)
     if name=='recenzent':validate_review(base)
@@ -83,7 +100,13 @@ def validate_response(data, name, handoff, kb, expected, requests):
         ids=[r['id'] for r in data['requests']]
         if len(ids)!=len(set(ids)):raise ValueError('Podvojeni ID zahtevkov.')
     received={r['id'] for r in requests if r['target_agent']==name or name=='recenzent'}
-    if any(r['request_id']not in received for r in data['request_updates']):raise ValueError('Odgovor se sklicuje na nedostavljeno nalogo.')
+    invalid=[i for i,r in enumerate(data['request_updates']) if r['request_id']not in received]
+    if invalid:
+        raise EngineeringError('Odgovor se sklicuje na nedostavljeno nalogo.',
+            details=[{'path':f'request_updates[{i}].request_id','reason':'undelivered_request',
+                      'received_request_id_sha256':digest(data['request_updates'][i]['request_id']),
+                      'allowed_request_ids':sorted(received),
+                      **({'received_knowledge_id':data['request_updates'][i]['request_id']} if data['request_updates'][i]['request_id'] in kb['records'] else {})} for i in invalid])
     needed=required_sources(name,expected,data['selection'])
     references=set(needed)
     for item in data['requests']+data['request_updates']+([data['proposal']] if data['proposal'] else []):references.update(item['source_ids'])
