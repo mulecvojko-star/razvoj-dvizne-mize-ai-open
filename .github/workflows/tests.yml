@@ -38,3 +38,15 @@ jobs:
           path: revision-artifacts/V01_R01-R02_Razvojni_cikel.zip
           retention-days: 7
           if-no-files-found: error
+      - name: Offline final trial with Word knowledge base (no model calls)
+        env:
+          GITHUB_ACTIONS: 'false'
+          FINAL_APPROVAL: ODOBRIM KONCNO SIMULACIJO V01
+        run: python -m src.final_trial
+      - name: Export final simulation package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: final-simulation-${{ matrix.python-version }}-${{ github.run_attempt }}
+          path: final-artifacts/V01_Koncni_AI_razvojni_paket.zip
+          retention-days: 7
+          if-no-files-found: error

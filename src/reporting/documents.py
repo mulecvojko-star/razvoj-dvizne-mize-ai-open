@@ -65,11 +65,11 @@ def section(story, title, texts):
         story.append(paragraph(text))
 
 
-def agent_text(story, data):
+def agent_text(story, data, source_filename="05_Izvorni_podatki.json"):
     section(story, "Povzetek agenta", [data.get("summary", "Deterministični simulirani rezultat.")])
     if data.get("outputs"):
         story.append(table(["Rezultat", "Vrednost / enota", "Podlaga"],
-                           [[r["name"], (f"{r['value']} [{r['unit']}]" if len(str(r["value"])) <= 300 else "Dolga izvirna vrednost je v 05_Izvorni_podatki.json; numerični pregled je v tabelah tega poročila."), r["basis"]] for r in data["outputs"]],
+                           [[r["name"], (f"{r['value']} [{r['unit']}]" if len(str(r["value"])) <= 300 else f"Dolga izvirna vrednost je v {source_filename}; numerični pregled je v tabelah tega poročila."), r["basis"]] for r in data["outputs"]],
                            [WIDTH*.23, WIDTH*.42, WIDTH*.35]))
     section(story, "Odprta vprašanja agenta", data.get("open_questions") or ["Agent ni navedel dodatnih vprašanj; nepreverjeni tehnični detajli ostajajo odprti."])
 
@@ -126,7 +126,7 @@ def requirements(handoff):
     return [[name,fmt(handoff.inputs[key]),unit] for key,(name,unit) in names.items()]
 
 
-def make_pdfs(root, handoff, provenance):
+def make_pdfs(root, handoff, provenance, *, source_filename="05_Izvorni_podatki.json"):
     fonts()
     c,h,e,r=[handoff.results[n]["engineering"] for n in LABELS]
     summary=[paragraph("Vhodne tehnične zahteve",heading=True),table(["Zahteva","Vrednost","Enota"],requirements(handoff))]
@@ -168,7 +168,7 @@ def make_pdfs(root, handoff, provenance):
     section(story,"Hod in največje obremenitve",[f"Razdalja med sornikoma spodaj: {fmt(c['cylinder_closed_pin_mm'])} mm; zgoraj: {fmt(c['cylinder_open_pin_mm'])} mm; hod: {fmt(c['stroke_mm'])} mm.",
         f"Projektna navpična sila: {fmt(c['design_vertical_load_N'])} N; največja sila cilindra: {fmt(c['peak_cylinder_force_N'])} N. {c['peak_basis']}",
         "To niso izračuni napetosti, uklona, zvarov, sornikov ali stabilnosti. Dejanska vgradna dolžina standardnega cilindra in kolizije še niso preverjene."])
-    agent_text(story,handoff.results["konstruktor"])
+    agent_text(story,handoff.results["konstruktor"],source_filename)
     pdf(root/"01_Konstruktor.pdf","Konstruktor",handoff,story,provenance)
 
     story=[]
@@ -185,7 +185,7 @@ def make_pdfs(root, handoff, provenance):
         section(story,"Hitrost",["Izvorna predaja ne vsebuje ločene tabele hitrosti; tu je ne izmišljamo. Pri podanem času glej izvorne predpostavke o konstantni hitrosti ploščadi.",f"Moč na gredi [kW]: {fmt(h['shaft_power_kW'])}"])
     section(story,"Varnostne funkcije",h["safety_functions"])
     section(story,"Omejitve",h["limitations"])
-    agent_text(story,handoff.results["hidravlik"])
+    agent_text(story,handoff.results["hidravlik"],source_filename)
     pdf(root/"02_Hidravlik.pdf","Hidravlik",handoff,story,provenance)
 
     story=[]
@@ -197,7 +197,7 @@ def make_pdfs(root, handoff, provenance):
         for f in findings:
             section(story,f"{f['id']} · {f['severity']} · {f['status']} · {LABELS.get(f['target_agent'],'Ročni pregled')}",[f["description"],"Zahtevani popravek: "+f["required_correction"]])
     section(story,"Končni status",[f"Odločitev: {handoff.results['recenzent']['decision']}. engineering_verified=false. Sledi uporabnikov pregled in izrecna odobritev naslednjega razvojnega cikla."])
-    agent_text(story,handoff.results["recenzent"])
+    agent_text(story,handoff.results["recenzent"],source_filename)
     pdf(root/"04_Recenzent.pdf","Recenzent",handoff,story,provenance)
 
 

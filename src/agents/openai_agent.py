@@ -53,13 +53,18 @@ class OpenAITransport:
             raise ModelError("Napačen vrstni red zahtev.", code="invalid_handoff")
         limit = self.agent_limits[ORDER[index]]
         schema = response_schema(handoff)
+        return self._request(instructions, json.dumps(handoff.to_dict(), ensure_ascii=False, allow_nan=False), schema, limit)
+
+    def _request(self, instructions, payload, schema, limit, *, reasoning=None):
+        """Shared Responses request/parser; callers own their separate approval policy."""
         try:
             response = self.client.responses.create(
                 model=self.model, instructions=instructions,
-                input=json.dumps(handoff.to_dict(), ensure_ascii=False, allow_nan=False),
+                input=payload,
                 text={"format": {"type": "json_schema", "name": "agent_result",
                                  "strict": True, "schema": schema}},
                 max_output_tokens=limit, store=False,
+                **({"reasoning": {"effort": reasoning}} if reasoning else {}),
             )
         except Exception as exc:
             codes = {"APITimeoutError": "api_timeout", "TimeoutError": "api_timeout",

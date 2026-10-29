@@ -7,7 +7,7 @@ name = "razvoj-dvizne-mize-ai"
 version = "0.3.0"
 description = "Učni orkestrator štirih agentov s tehničnim razvojnim paketom"
 requires-python = ">=3.11"
-dependencies = ["reportlab>=4.2,<5", "openpyxl>=3.1,<4"]
+dependencies = ["reportlab>=4.2,<5", "openpyxl>=3.1,<4", "pypdf>=5,<7"]
 
 [tool.setuptools.packages.find]
 include = ["src*"]
