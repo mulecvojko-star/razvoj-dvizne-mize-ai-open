@@ -1,0 +1,306 @@
+{
+  "provenance": {
+    "run_id": "40899065304",
+    "artifact_id": 12907613620,
+    "artifact_sha256": "157df48468e1fd206b5b7c7d49d02c58f17236be3c930face3fa565885ac6196",
+    "commit": "d75b9c42bb4a30aa64f97fff17fa45f91af521b6",
+    "response_sha256": "926d12bd18dd0faebcb79b75564ec0103501ae15925beff460911f4cad956f01"
+  },
+  "response": {
+    "result": {
+      "variant": "V01",
+      "revision": "R01",
+      "agent": "recenzent",
+      "summary": "Pregled potrjuje delne numerične kontrole, vendar ostajajo odprta ključna tehnična in varnostna tveganja; potrebni so popravki in dodatna preverjanja.",
+      "assumptions": [
+        "Uporabljeni so samo priloženi sintetični podatki in ID-ji iz predaje V01/R01.",
+        "Fiksne zahteve REQ-01 do REQ-06 se ne spreminjajo.",
+        "Čas dviga ni podan, zato pretok in moč ostajata NI PODATKA.",
+        "Hidravlična izbira se presoja le glede na idealno silo pri dovoljenem tlaku; vgradnja, hod, izkoristek in varnost niso potrjeni.",
+        "Za ekonomiko se upoštevajo samo priložene COST postavke; manjkajoče postavke ostanejo odprte."
+      ],
+      "open_questions": [
+        "NI PODATKA: čas dviga (REQ-09).",
+        "NI PODATKA: ekscentrična obremenitev (REQ-10).",
+        "NI PODATKA: varnostna kategorija / standardna skladnost (REQ-11).",
+        "NI PODATKA: hod, vgradna mera in dejanska izvedljivost izbranega cilindra HYD-01.",
+        "NI PODATKA: preverba uklona, spojev, stabilnosti in zadrževanja bremena.",
+        "NI PODATKA: dejanski stroški COST-10 do COST-12 ter DDV/dobava."
+      ],
+      "calculations": [],
+      "cost_items": [],
+      "outputs": [
+        {
+          "name": "review_status",
+          "value": "changes_required",
+          "unit": "status",
+          "basis": "Numerične kontrole so delno skladne, vendar ostajajo odprta glavna tehnična in varnostna tveganja."
+        },
+        {
+          "name": "force_curve_check",
+          "value": "soglasno s hidravlikom pri največji sili",
+          "unit": "check",
+          "basis": "Največja sila konstruktorja 64136.45 N je skladna s hidravlično primerjavo."
+        },
+        {
+          "name": "pressure_conversion_check",
+          "value": "bar to N/mm² uporabljeno skladno",
+          "unit": "check",
+          "basis": "Hidravlični izračun uporablja p = bar × 0,1 N/mm²."
+        },
+        {
+          "name": "catalogue_capacity",
+          "value": "nepotrjeno",
+          "unit": "status",
+          "basis": "HYD-01 pri 200 bar ne zagotovi zadostne idealne sile za zahtevani vrh in hod/vgradnja nista znana."
+        },
+        {
+          "name": "cost_status",
+          "value": "delni sintetični seštevek",
+          "unit": "status",
+          "basis": "Ekonomist je seštel le znane COST postavke; to ni celotna cena."
+        }
+      ],
+      "decision": "changes_required",
+      "findings": [
+        {
+          "id": "REV-R01-001",
+          "target_agent": "hidravlik",
+          "severity": "major",
+          "status": "open",
+          "description": "Izbrani cilinder HYD-01 ostaja nepotrjen: manjka dokaz o hodu, vgradni dolžini, dejanski vgradnji in ustreznosti pri obravnavanem delovnem območju.",
+          "required_correction": "Predloži kataloško izbiro z dokazano zadostno idealno silo pri dovoljenem tlaku in jasno označi, da hod/vgradnja ostajata nepokrita, če podatki manjkajo."
+        },
+        {
+          "id": "REV-R01-002",
+          "target_agent": "konstruktor",
+          "severity": "major",
+          "status": "open",
+          "description": "Geometrija je numerično sledljiva, vendar niso preverjeni uklon, napetosti, spoji, stabilnost in ekscentrična obremenitev.",
+          "required_correction": "Dopolni presojo z lokalnim preverjanjem nosilnosti, uklona, sklepov in stabilnosti ali pa pošteno pusti ta del nerešen."
+        },
+        {
+          "id": "REV-R01-003",
+          "target_agent": "ekonomist",
+          "severity": "major",
+          "status": "open",
+          "description": "Cena je navedena le kot delni sintetični seštevek; COST-10 do COST-12 so neznani in skupna cena ni potrjena.",
+          "required_correction": "Ohrani samo znane COST postavke, ne pretvarjaj neznank v 0 EUR in ne poročaj skupne cene kot potrjene."
+        },
+        {
+          "id": "REV-R01-004",
+          "target_agent": "recenzent",
+          "severity": "critical",
+          "status": "open",
+          "description": "Varnostna kategorija, standardna skladnost in preverba varnega spuščanja niso določeni, zato zasnova ni odobrena.",
+          "required_correction": "Označi varnost kot odprto in zahtevaj strokovno analizo tveganja ter dokazila o zadrževanju bremena in nadzorovanem spuščanju."
+        }
+      ]
+    },
+    "source_ids": [
+      "REV-01",
+      "REV-03",
+      "REV-05",
+      "REV-07",
+      "CON-01",
+      "GEO-01",
+      "GEO-02",
+      "GEO-03",
+      "GEO-04",
+      "HYD-01",
+      "HYD-02",
+      "HYD-03",
+      "HYD-04",
+      "HYD-05",
+      "HYD-06",
+      "HYD-07",
+      "HYD-08",
+      "REQ-01",
+      "REQ-02",
+      "REQ-03",
+      "REQ-04",
+      "REQ-05",
+      "REQ-06",
+      "REQ-07",
+      "REQ-08",
+      "REQ-09",
+      "REQ-10",
+      "REQ-11",
+      "COST-01",
+      "COST-02",
+      "COST-03",
+      "COST-04",
+      "COST-05",
+      "COST-06",
+      "COST-07",
+      "COST-08",
+      "COST-09",
+      "COST-10",
+      "COST-11",
+      "COST-12",
+      "TEST-01",
+      "TEST-02",
+      "TEST-03",
+      "TEST-04",
+      "TEST-05"
+    ],
+    "proposal": null,
+    "selection": null,
+    "requests": [
+      {
+        "id": "RQ-R01-001",
+        "target_agent": "hidravlik",
+        "reason": "Hidravlična izbira ostaja katalogsko nepotrjena zaradi manjkajočih podatkov o vgradnji in dejanskem hodu.",
+        "source_ids": [
+          "REV-03",
+          "TEST-01",
+          "HYD-01"
+        ],
+        "correction": "Preveri zadostnost idealne sile pri dovoljenem tlaku in izrecno označi manjkajoč hod/vgradno mero kot nerešena podatka.",
+        "objective": "catalogue_capacity"
+      },
+      {
+        "id": "RQ-R01-002",
+        "target_agent": "konstruktor",
+        "reason": "Lokalni pregled še ne pokriva nosilnosti, uklona, sklepov in stabilnosti pri ekscentrični obremenitvi.",
+        "source_ids": [
+          "REV-05",
+          "TEST-03",
+          "GEO-01"
+        ],
+        "correction": "Dopolni preverbo napetosti, uklona, sklepov in stabilnosti ali pa zapiši, da ostaja nerešeno.",
+        "objective": "manual_review"
+      },
+      {
+        "id": "RQ-R01-003",
+        "target_agent": "ekonomist",
+        "reason": "Delni sintetični seštevek ni celotna cena in ne pokriva vseh stroškov.",
+        "source_ids": [
+          "REV-06",
+          "TEST-04",
+          "COST-10",
+          "COST-11",
+          "COST-12"
+        ],
+        "correction": "Ohrani neznane stroške odprte in ne poročaj skupne cene kot potrjene.",
+        "objective": "manual_review"
+      },
+      {
+        "id": "RQ-R01-004",
+        "target_agent": "recenzent",
+        "reason": "Varnostna kategorija in zadrževanje bremena ostajata nepreverjena.",
+        "source_ids": [
+          "REV-07",
+          "HYD-08",
+          "HYD-07"
+        ],
+        "correction": "Oz. varnost označi kot odprto ter zahtevaj dokazila o nadzorovanem spuščanju in zadrževanju bremena.",
+        "objective": "manual_review"
+      }
+    ],
+    "request_updates": []
+  },
+  "observed_usage": {
+    "model": "gpt-5.4-mini",
+    "calls": [
+      {
+        "agent": "konstruktor",
+        "model": "gpt-5.4-mini",
+        "status": "completed",
+        "reserved_USD": 0.09075,
+        "input_tokens": 18995,
+        "output_tokens": 1058,
+        "reasoning_tokens": 0,
+        "estimated_cost_USD": 0.01900725,
+        "revision": "R01",
+        "prompt_sha256": "cbe9cce2da1a828d771a2c8b0255db7e3f1c05417acfa6c662522b44e4ff4db8",
+        "response_model": "gpt-5.4-mini-2026-03-17",
+        "accounted_USD": 0.01900725
+      },
+      {
+        "agent": "hidravlik",
+        "model": "gpt-5.4-mini",
+        "status": "completed",
+        "reserved_USD": 0.09075,
+        "input_tokens": 22556,
+        "output_tokens": 1003,
+        "reasoning_tokens": 0,
+        "estimated_cost_USD": 0.0214305,
+        "revision": "R01",
+        "prompt_sha256": "e6dd634af0aad33b4adde0e6f9e8f459f3328e7c046de3e7785f7d7a7c071a73",
+        "response_model": "gpt-5.4-mini-2026-03-17",
+        "accounted_USD": 0.0214305
+      },
+      {
+        "agent": "ekonomist",
+        "model": "gpt-5.4-mini",
+        "status": "completed",
+        "reserved_USD": 0.093,
+        "input_tokens": 26837,
+        "output_tokens": 1133,
+        "reasoning_tokens": 0,
+        "estimated_cost_USD": 0.02522625,
+        "revision": "R01",
+        "prompt_sha256": "0dbb4087b60174f01d56094dcf36a73f788247a8a511b05d3e6872ef3509536c",
+        "response_model": "gpt-5.4-mini-2026-03-17",
+        "accounted_USD": 0.02522625
+      },
+      {
+        "agent": "recenzent",
+        "model": "gpt-5.4-mini",
+        "status": "completed",
+        "reserved_USD": 0.09525,
+        "input_tokens": 28261,
+        "output_tokens": 1671,
+        "reasoning_tokens": 0,
+        "estimated_cost_USD": 0.02871525,
+        "revision": "R01",
+        "prompt_sha256": "ccbf50e01873315634498d79c5d4095abc663abe107e009451d1f5b6075752ac",
+        "response_model": "gpt-5.4-mini-2026-03-17",
+        "accounted_USD": 0.02871525
+      }
+    ],
+    "call_count": 4,
+    "per_agent": {
+      "konstruktor": {
+        "calls": 1,
+        "input_tokens": 18995,
+        "output_tokens": 1058,
+        "estimated_cost_USD": 0.01900725
+      },
+      "hidravlik": {
+        "calls": 1,
+        "input_tokens": 22556,
+        "output_tokens": 1003,
+        "estimated_cost_USD": 0.0214305
+      },
+      "ekonomist": {
+        "calls": 1,
+        "input_tokens": 26837,
+        "output_tokens": 1133,
+        "estimated_cost_USD": 0.02522625
+      },
+      "recenzent": {
+        "calls": 1,
+        "input_tokens": 28261,
+        "output_tokens": 1671,
+        "estimated_cost_USD": 0.02871525
+      }
+    },
+    "input_tokens": 96649,
+    "output_tokens": 4865,
+    "estimated_cost_USD": 0.09437925,
+    "reserved_exposure_USD": 0.36975,
+    "pricing": {
+      "model": "gpt-5.4-mini",
+      "input_per_million_USD": 0.75,
+      "output_per_million_USD": 4.5,
+      "source": "https://developers.openai.com/api/docs/models/gpt-5.4-mini",
+      "verified_on": "2026-10-29",
+      "valid_until": "2026-11-05",
+      "basis": "Standard text API; no cache discount; no regional uplift or tax included."
+    },
+    "threshold_USD": 3.0,
+    "warning": "Ocena po objavljenem standardnem ceniku, ne račun ali trda finančna omejitev."
+  }
+}

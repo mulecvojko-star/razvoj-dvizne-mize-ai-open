@@ -14,8 +14,8 @@ from src.orchestrator.revision_policy import fixed_requirements, require_fixed
 from src.reporting.source import redact
 from .knowledge import load_knowledge
 from .budget import Budget
-from .engineering import geometry, hydraulic, economics, findings, apply_geometry
-from .agents import FinalTransport, SimulatedResponder, prompt, schema, validate_response
+from .engineering import geometry, hydraulic, economics, findings, apply_geometry, eligible_hydraulic_choices
+from .agents import FinalTransport, SimulatedResponder, prompt, schema, validate_response, cited_sources
 
 APPROVAL={'simulated':'ODOBRIM KONCNO SIMULACIJO V01','openai':'ODOBRIM KONCNI AI V01 DO 16 KLICEV'}
 ROOT=Path(__file__).resolve().parents[2]
@@ -127,7 +127,8 @@ class FinalRunner:
                     elif name=='ekonomist':expected=economics(h.inputs,h.results['konstruktor']['engineering'],h.results['hidravlik']['engineering'],kb)
                     else:expected=findings(h.inputs,*(h.results[n]['engineering'] for n in ORDER[:3]),kb)
                     instructions,payload=prompt(name,h,kb,expected,pending,state['messages'])
-                    response_schema=schema(kb,expected,name,requests=pending,handoff=h)
+                    response_schema=schema(kb,expected,name,requests=pending,handoff=h,
+                        eligible_choices=eligible_hydraulic_choices(kb,expected['max_force_N']) if transport and name=='hidravlik' else None)
                     size=len(instructions.encode())+len(payload.encode())+len(json.dumps(response_schema,ensure_ascii=False).encode())
                     if size>budget.max_prompt_bytes or size+2048>budget.max_input_tokens:raise ValueError('Poziv presega odobreno vhodno omejitev.')
                     if transport:
@@ -167,7 +168,8 @@ class FinalRunner:
                             if not actual_change:
                                 state['stop_reason']='no_justified_next_change';partial['status']='proposal_only';save();break
                     result={**deepcopy(base),'engineering':expected,'engineering_verified':False,'technical_status':expected['status'],
-                            'simulated':not bool(transport),'declared_source_ids':data['source_ids'],'proposal':data['proposal'],
+                            'simulated':not bool(transport),'declared_source_ids':data['source_ids'],
+                            'effective_source_ids':sorted(cited_sources(data)),'citation_locations':cited_sources(data),'proposal':data['proposal'],
                             'selection':data['selection'],'requests':data['requests'],'request_updates':data['request_updates'],
                             'trace':{**metadata,'input_sha256':digest(h.inputs),'received_handoff_sha256':digest(json.loads(payload)['handoff']),
                                      'knowledge_sha256':kb['sha256'],'revision':label,'prompt_bytes':size,
@@ -182,7 +184,7 @@ class FinalRunner:
                         state['messages'].append({'sender':name,'recipient':'recenzent','revision':label,'request':update['request_id'],
                             'reason':update['reason'],'data_sources':update['source_ids'],'status':'unconfirmed','claimed_status':update['status']})
                     state['messages'].append({'sender':name,'recipient':ORDER[ORDER.index(name)+1] if name!='recenzent' else 'orchestrator',
-                        'revision':label,'request':f'{label}:{name}:handoff','reason':base['summary'],'data_sources':data['source_ids'],
+                        'revision':label,'request':f'{label}:{name}:handoff','reason':base['summary'],'data_sources':sorted(cited_sources(data)),
                         'status':'validated_handoff','result_sha256':digest(result)})
                     partial['handoff']=h.to_dict();save()
                 else:
