@@ -136,7 +136,7 @@ def make_pdfs(root, handoff, provenance):
         "Končna tehnična odločitev: changes_required. Numerične kontrole so opravljene; nadaljnje strokovne preverbe so obvezne."])
     for name in LABELS:
         section(summary,LABELS[name],[handoff.results[name].get("summary",handoff.results[name].get("concept",handoff.results[name].get("analysis",handoff.results[name].get("basis","Lokalno izračunana preliminarna predaja."))))])
-    section(summary,"Glavne nadaljnje preveritve",[f"{LABELS[f['target_agent']]}: {f['required_correction']}" for f in r["findings"]])
+    section(summary,"Glavne nadaljnje preveritve",[f"{LABELS.get(f['target_agent'],'Ročni pregled')}: {f['required_correction']}" for f in r["findings"]])
     section(summary,"Zbrana odprta vprašanja",handoff.open_questions or ["Glej odprte ugotovitve recenzenta."])
     pdf(root/"00_Povzetek.pdf","Povzetek razvojne variante",handoff,summary,provenance)
 
@@ -195,7 +195,7 @@ def make_pdfs(root, handoff, provenance):
     for heading,findings in (("Lokalne ugotovitve",r["findings"]),("Ugotovitve AI-recenzenta",handoff.results["recenzent"].get("findings",[]))):
         section(story,heading,[])
         for f in findings:
-            section(story,f"{f['id']} · {f['severity']} · {f['status']} · {LABELS[f['target_agent']]}",[f["description"],"Zahtevani popravek: "+f["required_correction"]])
+            section(story,f"{f['id']} · {f['severity']} · {f['status']} · {LABELS.get(f['target_agent'],'Ročni pregled')}",[f["description"],"Zahtevani popravek: "+f["required_correction"]])
     section(story,"Končni status",[f"Odločitev: {handoff.results['recenzent']['decision']}. engineering_verified=false. Sledi uporabnikov pregled in izrecna odobritev naslednjega razvojnega cikla."])
     agent_text(story,handoff.results["recenzent"])
     pdf(root/"04_Recenzent.pdf","Recenzent",handoff,story,provenance)

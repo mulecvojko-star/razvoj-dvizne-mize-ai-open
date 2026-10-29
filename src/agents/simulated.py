@@ -62,6 +62,13 @@ class SimulatedAgent:
             if self.name == "recenzent":
                 result["decision"] = engineering["status"]
                 result["findings"] = engineering["findings"]
+        if handoff.revision_context:
+            from src.orchestrator.revision_policy import revision_work
+            result["revision_work"] = revision_work(self.name, handoff.revision_context)
+            if self.name == "recenzent" and handoff.revision == "R02":
+                result["next_revision"] = None
+                result["summary"] = "R02 je zaključena; dosežena je meja dveh simuliranih revizij. Naloge ostajajo odprte brez tehnične odobritve."
+            questions = [q for q in questions if q not in handoff.open_questions]
         return handoff.with_result(self.name, common | result, questions)
 
 

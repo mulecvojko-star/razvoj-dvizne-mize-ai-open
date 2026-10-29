@@ -268,3 +268,19 @@ GitHub Actions namesti `[ai]` in preveri teste ter simulirani primer na Pythonu
 
 Referenci integracije: [uradni Python SDK](https://github.com/openai/openai-python)
 in [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs).
+
+## Omejeni razvojni reviziji – Naloga 06
+
+Brezplačno zaporedje V01-R01 → naloge Recenzenta → V01-R02 ponovno izračuna rezultate,
+ohrani fiksne zahteve in se po drugi reviziji ustavi. Izboljšanje se označi samo
+ob neodvisno preverjenem dokazu; privzeti sintetični primer ohrani tri nerešene
+ugotovitve in geometrijo. Plačljivi večrevizijski način je onemogočen.
+
+```sh
+python -m src.orchestrator.revisions examples/V01-R01.json \
+  --approve-sequence V01:R01-R02 --output-dir revision-artifacts
+```
+
+Skupni ZIP vsebuje oba razvojna paketa, primerjalni PDF, naloge s statusi in izvorna
+JSON. Za telefon uporabi ročni workflow **Dve reviziji V01 (samo simulacija)**.
+Podrobnosti: [politika, zagon in omejitve revizij](docs/revizije-V01.md).
