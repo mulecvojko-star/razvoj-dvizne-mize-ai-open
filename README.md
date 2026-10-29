@@ -8,6 +8,14 @@ strukturiranim JSON odgovorom. Vsak zagon izvede največ en izrecno odobren cike
 Uporabljaj samo sintetične ali javne podatke. Rezultati modelov in simulacije niso
 strokovna potrditev dimenzioniranja, varnosti, skladnosti ali stroškov naprave.
 
+## Popravek stroškovne predaje (04B)
+
+[Poročilo 04B](docs/economist-04b.md) loči potrjeno zavrnitev seznama stroškov,
+reproducirano težavo binarnega float in neznani dejanski odgovor Ekonomista.
+Stroški so normalizirani na cente in preverjeni po kategoriji; zahteva modelu
+omeji postavke na dovoljeni katalog. Ob zavrnitvi poročilo poda konkretno
+postavko, polje in razlog. To ne dovoljuje izmišljenih preverjenih cen.
+
 ## Pripravljenost za plačljivi preizkus
 
 [Poročilo naloge 04A](docs/readiness-V01-R01.md) loči dejansko staro porabo od

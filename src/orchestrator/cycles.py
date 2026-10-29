@@ -80,7 +80,7 @@ class CycleRunner:
                 if isinstance(exc, ModelError):
                     record["error"] = {"code": exc.code}
                 if isinstance(exc, EngineeringError):
-                    record["error"] = {"code": exc.code, "description": str(exc)}
+                    record["error"] = {"code": exc.code, "description": str(exc), "details": exc.details}
                 record["finished_at"] = now()
                 # Persist partial results, never raw exceptions or credentials.
                 save()

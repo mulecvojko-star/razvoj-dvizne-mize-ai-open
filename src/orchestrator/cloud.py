@@ -154,6 +154,7 @@ def run_trial(config, directory, *, preflight=False):
     status = "stopped"
     result = None
     failure_code = None
+    validation_details = []
     try:
         pipeline = Orchestrator()
         if config.mode == "openai":
@@ -167,6 +168,7 @@ def run_trial(config, directory, *, preflight=False):
         status = "awaiting_approval"
     except BaseException as exc:
         from src.engineering.calculations import EngineeringError
+        validation_details = exc.details if isinstance(exc, EngineeringError) else []
         failure_code = (exc.code if isinstance(exc, (ModelError, EngineeringError))
                         else "configuration_error" if transport is None and config.mode == "openai"
                         else "interrupted" if isinstance(exc, KeyboardInterrupt)
@@ -176,6 +178,7 @@ def run_trial(config, directory, *, preflight=False):
         report = {"status": status, "mode": config.mode, "engineering_verified": False,
                   "technical_status": result.results["recenzent"].get("technical_status", "not_evaluated") if result else "not_completed",
                   "failure_code": failure_code,
+                  "validation_details": validation_details,
                   "api_requests_started": bounded.calls if bounded else 0,
                   "reported_input_tokens": bounded.reported_input_tokens if bounded else 0,
                   "reported_output_tokens": bounded.reported_output_tokens if bounded else 0,

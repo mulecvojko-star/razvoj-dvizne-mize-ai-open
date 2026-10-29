@@ -1,11 +1,16 @@
 """Explicit SI/mm calculations for a single-stage, two-plane scissor concept."""
 
 import math
+from .costs import allowed_cost_items
 from src.models.contracts import REQUIRED_INPUTS, digest
 
 
 class EngineeringError(ValueError):
     code = "engineering_validation_failed"
+
+    def __init__(self, message, *, details=None):
+        super().__init__(message)
+        self.details = details or []
 
 
 def enabled(handoff):
@@ -133,14 +138,7 @@ def hydraulics(inputs, constructor):
 
 def economics(constructor, hydraulic):
     length = constructor["parameters"]["arm_length_mm"]
-    items = [
-        {"category": "arms", "price_kind": "synthetic", "amount_EUR": 4 * length / 1000 * 50,
-         "source": "Sintetično 50 EUR/m za štiri roke; ne določa materiala ali nosilnosti."},
-        {"category": "base_and_deck", "price_kind": "synthetic", "amount_EUR": 300.0, "source": "Sintetičen učni pavšal."},
-        {"category": "cylinder", "price_kind": "synthetic", "amount_EUR": 350.0, "source": "Sintetičen učni pavšal; potreben hod in sila še ne določata dobavnega artikla."},
-        {"category": "hydraulic_unit", "price_kind": "unknown", "amount_EUR": None, "source": "Manjkajo dejanski pretok, pogon in ponudba."},
-        {"category": "assembly", "price_kind": "synthetic", "amount_EUR": 250.0, "source": "Sintetičen učni pavšal."},
-        {"category": "safety_and_verification", "price_kind": "unknown", "amount_EUR": None, "source": "Manjkajo analiza tveganja, dokumentacija in obseg preverjanj."}]
+    items = allowed_cost_items(length)
     return {"status": "incomplete_estimate", "engineering_verified": False,
             "source_constructor_sha256": digest(constructor), "source_hydraulics_sha256": digest(hydraulic),
             "verified_prices": [], "cost_items": items,

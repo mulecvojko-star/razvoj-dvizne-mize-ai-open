@@ -140,7 +140,8 @@ class CloudRunnerTests(unittest.TestCase):
             payload = json.loads(request.content)
             self.assertEqual(payload["model"], "gpt-5.4-mini")
             self.assertEqual(payload["max_output_tokens"], 1500)
-            self.assertEqual(payload["text"]["format"]["schema"], RESPONSE_SCHEMA)
+            from src.engineering.contracts import response_schema
+            self.assertEqual(payload["text"]["format"]["schema"], response_schema(Handoff(**json.loads(payload["input"]))))
             self.assertTrue(payload["text"]["format"]["strict"])
             self.assertFalse(payload["store"])
             incoming = Handoff(**json.loads(payload["input"]))

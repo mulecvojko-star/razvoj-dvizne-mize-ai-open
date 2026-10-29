@@ -728,7 +728,7 @@
           {
             "category": "arms",
             "price_kind": "synthetic",
-            "amount_EUR": 220.00000000000003,
+            "amount_EUR": 220.0,
             "source": "Sintetično 50 EUR/m za štiri roke; ne določa materiala ali nosilnosti."
           },
           {
@@ -786,7 +786,7 @@
         {
           "category": "arms",
           "price_kind": "synthetic",
-          "amount_EUR": 220.00000000000003,
+          "amount_EUR": 220.0,
           "source": "Sintetično 50 EUR/m za štiri roke; ne določa materiala ali nosilnosti."
         },
         {
@@ -829,7 +829,7 @@
       ],
       "trace": {
         "input_sha256": "5d2a2f45525b4331a2b9f874b3f8912bec57dbe543585154d6b018dd4b6dbdae",
-        "handoff_sha256": "2e73df754705a29f0f7c5f408a0e1efa320ea34f22d47b9dbecef26539db65c7",
+        "handoff_sha256": "07d4fe22e3d186ed94584a552b9b842af282ce30d0a9d511c627530cfcaf2760",
         "mode": "simulated"
       },
       "decision": "changes_required",
