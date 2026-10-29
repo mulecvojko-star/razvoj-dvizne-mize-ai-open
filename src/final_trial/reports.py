@@ -15,6 +15,7 @@ from src.reporting.documents import make_pdfs, pdf, table, section, paragraph, f
 from src.reporting.source import redact
 from src.orchestrator.revision_policy import fixed_requirements
 from .engineering import geometry, hydraulic, economics, findings
+from .agents import cited_sources
 
 FILES=('00_Povzetek_razvoja.pdf','01_Konstruktor.pdf','02_Hidravlik.pdf','03_Ekonomist.xlsx','04_Recenzent.pdf',
        '05_Primerjava_revizij.pdf','06_Komunikacija_agentov.pdf','07_Viri_in_predpostavke.pdf','08_Izvorni_podatki.json','09_API_poraba.json')
@@ -30,6 +31,13 @@ def validate(state):
     for index,record in enumerate(revisions):
         h=Handoff(**record['handoff'])
         if record['status']!='completed' or h.label!=f'V01-R{index+1:02d}' or tuple(h.results)!=ORDER or fixed_requirements(h.inputs)!=state['fixed_requirements']:raise ValueError('Neveljavna identiteta, fiksne zahteve ali predaja.')
+        for result in h.results.values():
+            if 'effective_source_ids' in result:
+                citation_data={'source_ids':result['declared_source_ids'],'requests':result['requests'],
+                               'request_updates':result['request_updates'],'proposal':result['proposal']}
+                locations=cited_sources(citation_data)
+                if result['effective_source_ids']!=sorted(locations) or result.get('citation_locations')!=locations or set(locations)-set(kb['records']):
+                    raise ValueError('Neskladna sled izrecno navedenih virov.')
         c,hv,e,r=[h.results[n]['engineering'] for n in ORDER]
         if not compare(c,geometry(h.inputs)) or not compare(hv,hydraulic(h.inputs,c,kb,hv['catalogue']['choice'])) or not compare(e,economics(h.inputs,c,hv,kb)) or not compare(r,findings(h.inputs,c,hv,e,kb)):raise ValueError('Poročilo ni skladno z determinističnimi izračuni.')
         if h.results['recenzent']['decision']!='changes_required' or any(h.results[n]['engineering_verified'] is not False for n in ORDER):raise ValueError('Lažna tehnična odobritev.')
@@ -136,10 +144,10 @@ def build_final_package(state,directory):
         for conflict in kb['conflicts']:section(story,conflict['severity'],[conflict.get('reason',str(conflict))])
         used=set()
         for h in results:
-            for name in ORDER:used.update(h.results[name]['declared_source_ids'])
+            for name in ORDER:used.update(h.results[name].get('effective_source_ids',h.results[name]['declared_source_ids']))
         for identifier in sorted(used):
             row=kb['records'][identifier];section(story,identifier+' · '+row['classification'],[' | '.join(row['cells']),json.dumps(row['source'],ensure_ascii=False)])
-        section(story,'Kaj je bilo dejansko uporabljeno',['Zgornji ID-ji so deklarirani v validiranih odgovorih agentov. Celoten izvleček je bil posredovan v pozivih; deklaracija ni dokaz notranjega razmišljanja modela.'])
+        section(story,'Kaj je bilo dejansko uporabljeno',['Zgornji ID-ji so izrecno navedeni v vrhnjem seznamu ali strukturiranih zahtevkih validiranih odgovorov agentov. Izvorna mesta citatov so shranjena v JSON; novih citatov ne dodajamo. Celoten izvleček je bil posredovan v pozivih; deklaracija ni dokaz notranjega razmišljanja modela.'])
         pdf(root/'07_Viri_in_predpostavke.pdf','Viri in predpostavke',final,story,provenance)
         (root/'08_Izvorni_podatki.json').write_text(source_text,encoding='utf-8')
         (root/'09_API_poraba.json').write_text(json.dumps(state['api_usage'],ensure_ascii=False,indent=2,allow_nan=False)+'\n',encoding='utf-8')

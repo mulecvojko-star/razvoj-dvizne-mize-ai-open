@@ -38,6 +38,20 @@ def catalogue(kb, constructor, choice):
             'basis':'F=p×0,1×pi×D²/4, idealni izteg eta=1. Dejanski hidravlični izkoristek, izgube, hod in vgradnja niso potrjeni. Kataloški pretok ni zahtevan pretok.'}
 
 
+
+def eligible_hydraulic_choices(kb, force_N):
+    """Nominal force/pressure filter only; no assertion of stroke or installation."""
+    options=[]
+    for cid in ('HYD-01','HYD-02','HYD-03','HYD-04'):
+        cylinder=kb['components'][cid]
+        for pid in ('HYD-05','HYD-06'):
+            pump=kb['components'][pid]
+            for pressure in (160,200,250,315):
+                if pressure<=min(cylinder['max_pressure_bar'],pump['max_pressure_bar']) and pressure*.1*math.pi*cylinder['bore_mm']**2/4>=force_N:
+                    options.append({'cylinder_id':cid,'pump_id':pid,'pressure_bar':pressure})
+    return options
+
+
 def hydraulic(inputs,c,kb,choice):
     data=stage(hydraulics(inputs,c),inputs)
     data['catalogue']=catalogue(kb,c,choice)
