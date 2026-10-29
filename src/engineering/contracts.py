@@ -1,8 +1,9 @@
 """Build local stage data and validate numerical claims separately from model prose."""
 
 import math
+import re
 from copy import deepcopy
-from src.models.contracts import ORDER, RESPONSE_SCHEMA, digest
+from src.models.contracts import ORDER, RESPONSE_SCHEMA, digest, obj
 from .calculations import EngineeringError, construction, economics, enabled, hydraulics
 from .review import review
 from .costs import cost_issues, exact_cost_schema
@@ -49,17 +50,55 @@ def claims(name, data):
     return [{"quantity": key, "value": value, "unit": unit} for key, (value, unit) in numbers.items()]
 
 
+def calculation_schema(name, expected):
+    """Constrain IDs/units/cardinality; numerical truth is still checked locally."""
+    rows = claims(name, expected)
+    choices = [obj({"quantity": {"type": "string", "enum": [row["quantity"]]},
+                    "value": {"type": "number"},
+                    "unit": {"type": "string", "enum": [row["unit"]]}}) for row in rows]
+    return {"type": "array", "minItems": len(rows), "maxItems": len(rows),
+            "items": {"anyOf": choices} if choices else deepcopy(RESPONSE_SCHEMA["properties"]["calculations"]["items"])}
+
+
 def validate_claims(name, model, expected):
     wanted = {r["quantity"]: r for r in claims(name, expected)}
     actual = model["calculations"]
     if len(actual) != len(wanted) or {r["quantity"] for r in actual} != set(wanted):
-        raise EngineeringError("AI ni vrnil vseh zahtevanih numeričnih izračunov.")
-    for row in actual:
+        details = []
+        if len(actual) != len(wanted):
+            details.append({"path": "calculations", "reason": "calculation_count_mismatch",
+                            "expected_count": len(wanted), "received_count": len(actual)})
+        seen = set()
+        for index, row in enumerate(actual):
+            quantity = row["quantity"]
+            reason = "duplicate_quantity" if quantity in seen else "unexpected_quantity" if quantity not in wanted else None
+            seen.add(quantity)
+            if reason:
+                detail = {"path": f"calculations[{index}].quantity", "reason": reason}
+                # Echo only short identifier-shaped quantities, never arbitrary model prose.
+                if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]{0,63}", quantity):
+                    detail["received_quantity"] = quantity
+                else:
+                    detail["received_quantity_sha256"] = digest(quantity)
+                if name == "hidravlik" and expected is not None and expected["flow_L_min"] is None and quantity in (
+                        "flow_L_min", "max_flow_L_min", "hydraulic_power_kW", "max_hydraulic_power_kW"):
+                    detail.update(reason="quantity_undefined_without_lift_time_s", expected_state="unknown",
+                                  missing_input="lift_time_s")
+                if type(row["value"]) in (int, float) and math.isfinite(row["value"]):
+                    detail["received_value"] = row["value"]
+                details.append(detail)
+        details.extend({"path": "calculations", "reason": "missing_quantity", "expected_quantity": quantity}
+                       for quantity in wanted if quantity not in seen)
+        raise EngineeringError("AI ni vrnil točnega seznama zahtevanih numeričnih izračunov.", details=details)
+    for index, row in enumerate(actual):
         target = wanted[row["quantity"]]
         if (row["unit"] != target["unit"] or isinstance(row["value"], bool)
                 or not math.isfinite(row["value"])
                 or not math.isclose(row["value"], target["value"], rel_tol=1e-4, abs_tol=0.01)):
-            raise EngineeringError(f"Napačen AI-izračun ali enota: {target['quantity']}.")
+            raise EngineeringError(f"Napačen AI-izračun ali enota: {target['quantity']}.",
+                                   details=[{"path": f"calculations[{index}]", "reason": "value_or_unit_mismatch",
+                                             "expected_quantity": target["quantity"], "expected_value": target["value"],
+                                             "expected_unit": target["unit"]}])
     cost_items = expected["cost_items"] if expected is not None and name == "ekonomist" else []
     validate_cost_items(model.get("cost_items"), cost_items)
     if name == "recenzent" and expected is not None:

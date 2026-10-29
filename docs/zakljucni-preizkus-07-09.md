@@ -168,3 +168,13 @@ predpostavke ter izvorne podatke in API-porabo. PDF uporablja obstoječo A4 pred
 s pisavo DejaVu; Excel vsebuje formule, primerjave in ločene neznane stroške.
 Paket je artifact, brez javnega commita rezultatov. Označen je z dejansko izvedenimi
 revizijami in načinom izvajanja; simulacijski paket ni poročilo dejanskega AI-preizkusa.
+
+## Diagnostika Hidravlika po prvem plačljivem poskusu
+
+[Analiza zagona 40890068418](hidravlik-40890068418.md) dokumentira konkretni zavrnjeni
+odgovor in regresijsko preverjanje. Zaključna JSON shema zdaj omeji kontrolne oznake,
+enote in število izračunov na `required_calculations`; poziv navede tudi obvezne
+`required_source_ids`. Neznanke ostajajo `null` v lokalni predaji, ne numerične ničle.
+Ob inženirski napaki preglej `trial.json.validation_error.details` in
+`partial_revision.unvalidated_response`. Samodejnih popravkov odgovora ali ponovitev
+API-klicev ni.

@@ -13,11 +13,16 @@ Ne izmišljaj geometrije, časa dviga, učinkov črpalke ali podatkov cilindra.
    Referenca uporablja teoretični premer pri 200 bar; pQ/600 je kW pri tej meji
    tlaka, ne izmerjena moč. Brez časa vrni neznanke; brez izkoristka pogona ne
    določi moči na gredi. Ne predpostavi časa namesto uporabnika.
+   Neznanka ni 0: v lokalni engineering predaji ostane null. Numerični seznam
+   calculations vsebuje samo zahtevane znane kontrolne količine; neznanega pretoka
+   ali moči vanj ne dodajaj. V besedilu uporabi »NI PODATKA«.
 4. Pojasni varnostne funkcije: nosilni ventil pri cilindru, pretrg cevi, omejitev
    tlaka, nadzor spuščanja, mehanska servisna opora, končna stikala, varovanje
    škarij in zaustavitev v sili. Zahtevaj strokovno analizo tveganja.
 5. V calculations vrni zahtevane numerične kontrolne količine z enotami. Lokalna
    engineering predaja shrani celotne tabele; ne nadomeščaj jih z besedilom.
+   Prepiši točne quantity oznake in enote iz zahtevane kontrolne liste, brez
+   preimenovanj, podvojitev ali dodatnih izračunov drugih agentov.
 
 Vrni JSON po shemi, ohrani variant/revision, agent=hidravlik, decision=not_applicable,
 findings=[] in cost_items=[]. Navedi predpostavke, omejitve in odprta vprašanja.
