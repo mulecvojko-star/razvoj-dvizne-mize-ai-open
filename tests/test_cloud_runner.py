@@ -107,7 +107,13 @@ class CloudRunnerTests(unittest.TestCase):
             self.assertEqual(factory.call_count, 1)
             for path in Path(directory).rglob("*"):
                 if path.is_file():
-                    self.assertNotIn("secret-marker-must-never-be-exported", path.read_text())
+                    if path.suffix == ".zip":
+                        from zipfile import ZipFile
+                        with ZipFile(path) as archive:
+                            for name in archive.namelist():
+                                self.assertNotIn(b"secret-marker-must-never-be-exported", archive.read(name))
+                    else:
+                        self.assertNotIn("secret-marker-must-never-be-exported", path.read_text())
 
     def test_budget_blocks_oversized_prompts_and_fifth_request_before_transport(self):
         value, _ = synthetic_handoff()

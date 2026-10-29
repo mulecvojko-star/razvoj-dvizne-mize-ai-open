@@ -4,16 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "razvoj-dvizne-mize-ai"
-version = "0.2.0"
-description = "Učni orkestrator štirih simuliranih agentov"
+version = "0.3.0"
+description = "Učni orkestrator štirih agentov s tehničnim razvojnim paketom"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["reportlab>=4.2,<5", "openpyxl>=3.1,<4"]
 
 [tool.setuptools.packages.find]
 include = ["src*"]
 
 [project.optional-dependencies]
 ai = ["openai>=2.0,<3"]
+test = ["pypdf>=5,<7", "PyMuPDF>=1.24,<2"]
 
 [tool.setuptools.package-data]
 "src.agents" = ["*.md"]
+
+"src.reporting" = ["fonts/*.ttf", "fonts/LICENSE.txt"]
