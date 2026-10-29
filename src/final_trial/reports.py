@@ -16,6 +16,7 @@ from src.reporting.source import redact
 from src.orchestrator.revision_policy import fixed_requirements
 from .engineering import geometry, hydraulic, economics, findings
 from .agents import cited_sources
+from .presentation import document_view
 
 FILES=('00_Povzetek_razvoja.pdf','01_Konstruktor.pdf','02_Hidravlik.pdf','03_Ekonomist.xlsx','04_Recenzent.pdf',
        '05_Primerjava_revizij.pdf','06_Komunikacija_agentov.pdf','07_Viri_in_predpostavke.pdf','08_Izvorni_podatki.json','09_API_poraba.json')
@@ -92,7 +93,10 @@ def workbook(path,state,results):
 
 def build_final_package(state,directory):
     # Entire validation/export is offline, including --report-only.
-    state=redact(state);results=validate(state);final=results[-1];kb=state['knowledge'];directory=Path(directory)
+    state=redact(state);results=validate(state);original=results[-1];final,prose_notes=document_view(original);kb=state['knowledge'];directory=Path(directory)
+    state['document_presentation']={'model_calls':0,'source_handoff_sha256':digest(original.to_dict()),
+        'policy':'Published hydraulic facts derive from validated engineering; original AI prose remains unchanged in revisions.',
+        'notes':prose_notes}
     directory.mkdir(parents=True,exist_ok=True);destination=directory/'V01_Koncni_AI_razvojni_paket.zip'
     source_text=json.dumps(state,ensure_ascii=False,indent=2,allow_nan=False)+'\n'
     provenance={'input_file':'08_Izvorni_podatki.json','input_file_sha256':hashlib.sha256(source_text.encode('utf-8')).hexdigest()}
@@ -112,6 +116,7 @@ def build_final_package(state,directory):
             f"Ustavitev: {state['stop_reason']}. Baza: {kb['document']}, SHA-256 {kb['sha256']}.",
             'Programski uspeh ni tehnična odobritev. Sintetična konstrukcija ni certificirana ali primerna za izdelavo.',
             'Uporabljene spremembe so navedene v primerjavi; odsotnost spremembe ni prikazana kot izboljšanje.'])
+        if prose_notes:section(summary,'Kontrola besedilne skladnosti',['Izvirno besedilo Hidravlika omenja drug katalogski kandidat kot strukturirana izbira. Za tehnične podatke v dokumentih velja preverjena strukturirana predaja; komentarji so nespremenjeni v izvornem JSON.'])
         section(summary,'Odprte in nepotrjene naloge',[t['id']+': '+t['reason'] for t in state['tasks'] if t['status']!='resolved'])
         supplement('00_Povzetek.pdf','Potek razvoja',summary);(root/'00_Povzetek.pdf').rename(root/'00_Povzetek_razvoja.pdf')
         story=[];section(story,'Spremembe geometrije in ponovni izračuni',[])
@@ -124,9 +129,11 @@ def build_final_package(state,directory):
             f"Idealna zmogljivost: {fmt(cat['ideal_capacity_N'])} N; zahtevana sila: {fmt(cat['peak_required_force_N'])} N.",cat['basis'],
             'Hod kataloškega cilindra, vgradnja in izkoristek: NI PODATKA. Komponenti sta scenarijska kandidata, ne potrjena izbira.'])
         story.append(table(['HYD ID','D [mm]','p največ [bar]','Idealna sila [N]','COST EUR'],[[a['id'],fmt(a['bore_mm']),fmt(a['max_pressure_bar']),fmt(a['ideal_capacity_at_selected_pressure_N']),fmt(a['price_EUR'])] for a in cat['alternatives']]))
+        if prose_notes:section(story,'Kontrola besedilne skladnosti',['Opozorilo: izvirni AI komentar govori tudi o drugem cilindru. Ta komentar ni potrjen tehnični podatek; veljajo zgornja strukturirana izbira in izračuni. Izvirnik in mesta neskladij so v 08_Izvorni_podatki.json.'])
         supplement('02_Hidravlik.pdf','Katalog in primerjava',story)
         story=[];section(story,'Zahtevki in neodvisni statusi',[])
         for t in state['tasks']:section(story,t['id']+' · '+t['status'],[t['reason'],'Odgovoren: '+(t['target_agent'] or 'Ročni pregled'),t.get('resolution','Brez dokaza zaprtja.'),'Viri: '+', '.join(t['source_ids'])])
+        if prose_notes:section(story,'Dodatna kontrola izvoznika (ni izvirna ugotovitev AI-recenzenta)',['V hidravličnem besedilu je zaznana omemba drugega cilindra. Neoverjeno besedilo je ohranjeno v JSON in komunikacijskem dnevniku; tehnični pregled dokumentov uporablja strukturirane vrednosti. To ne zapira nobene inženirske ugotovitve.'])
         supplement('04_Recenzent.pdf','Vsi zahtevki',story)
         workbook(root/'03_Ekonomist.xlsx',state,results)
         story=[];section(story,'Primerjava dejansko zaključenih revizij',['Nedokončan predlog ni nova revizija. Manjša idealna sila ali odpravljena kataloška napaka ne dokazujeta splošne tehnične ustreznosti.'])
@@ -137,6 +144,7 @@ def build_final_package(state,directory):
         section(story,'Končna ocena',['changes_required; engineering_verified=false. '+state['stop_reason']])
         pdf(root/'05_Primerjava_revizij.pdf','Primerjava revizij',final,story,provenance)
         story=[];section(story,'Komunikacija prek orkestratorja',['Vsako sporočilo ima pošiljatelja, prejemnika, revizijo, zahtevek, razlog, vir in status. Trditev addressed ne zapre naloge.'])
+        if prose_notes:section(story,'Opozorilo za branje izvirne komunikacije',['Spodaj so izvirna sporočila, vključno z nepreverjenim besedilom Hidravlika. Omemba izhodiščnega cilindra ni izbira za končni izračun. Za končno izbiro glej strukturirano predajo in 02_Hidravlik.pdf.'])
         for msg in state['messages']:
             section(story,f"{msg['revision']} · {msg['sender']} → {msg['recipient']} · {msg['request']}",[msg['reason'],'Status: '+msg['status'],'Viri: '+', '.join(msg['data_sources'])])
         pdf(root/'06_Komunikacija_agentov.pdf','Komunikacija agentov',final,story,provenance)
