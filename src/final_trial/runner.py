@@ -8,6 +8,7 @@ from pathlib import Path
 from src.models import Handoff
 from src.models.contracts import ORDER, digest, validate_inputs
 from src.engineering.contracts import claims
+from src.engineering.calculations import EngineeringError
 from src.orchestrator.cloud import synthetic_handoff
 from src.orchestrator.revision_policy import fixed_requirements, require_fixed
 from src.reporting.source import redact
@@ -99,7 +100,7 @@ class FinalRunner:
                'stop_reason':None,'commit':os.getenv('GITHUB_SHA','local'),'run_id':os.getenv('GITHUB_RUN_ID','local')}
         # Exclusive ledger blocks accidental local replay. Workflow additionally forbids reruns.
         with state_path.open('x',encoding='utf-8') as f:json.dump(redact(state),f,ensure_ascii=False,indent=2)
-        transport=None;pending=[];inputs=deepcopy(initial.inputs)
+        transport=None;pending=[];inputs=deepcopy(initial.inputs);name=None;label=None
         def save():
             state['api_usage']=budget.report();write(state_path,state);write(self.directory/'09_API_poraba.json',budget.report())
         try:
@@ -217,6 +218,10 @@ class FinalRunner:
             state['package']=archive.name;save()
             return state
         except BaseException as exc:
-            state['status']='stopped';state['stop_reason']=getattr(exc,'code','validation_or_budget_failure');save();raise
+            state['status']='stopped';state['stop_reason']=getattr(exc,'code','validation_or_budget_failure')
+            if isinstance(exc,EngineeringError):
+                state['validation_error']={'code':exc.code,'agent':name,'revision':label,
+                                           'description':str(exc),'details':deepcopy(exc.details)}
+            save();raise
         finally:
             if transport:transport.close()

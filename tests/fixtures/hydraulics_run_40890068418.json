@@ -1,0 +1,196 @@
+{
+  "provenance": {
+    "run_id": "40890068418",
+    "artifact_id": 12904202436,
+    "artifact_digest": "sha256:3adb955d31e11730b9728f5e1ecb90b69117c14a204218853caab3d6a6de2287",
+    "commit": "22009e9a3de1b7fb26dc494465ab19d0d33a3b5c",
+    "document_sha256": "86537cf49ac888bfbf33c9ff6260b9ba295cd3fe8a00178bb1c444b182ae7311",
+    "unvalidated_response_sha256": "c75acd11f7e2a5182e9d8fe2785522c781b1667fe98185f1669b4bc12c9eef7e",
+    "trial_json_sha256": "bd60fa1ce940f0a0b1c69745ce06f9c754305a5a316d991d60e9e87d8628f05c",
+    "scope": "Izključno sintetični javni projekt. Dejanski redigirani odgovor Hidravlika R01; brez poverilnic in zgodovine celotnega zagona."
+  },
+  "response": {
+    "result": {
+      "variant": "V01",
+      "revision": "R01",
+      "agent": "hidravlik",
+      "summary": "Primerjava tlakov 160/200/250/315 bar je narejena na podlagi predane sile in geometrije. Za pretok in moč manjka čas dviga, zato ostajata nedoločena. Kataloška izbira je informativna in ne potrjuje vgradnje, hoda ali varnosti.",
+      "assumptions": [
+        "Prenesena je celotna deterministična krivulja sile po višini in zahtevani hod iz konstrukcijske predaje R01.",
+        "Uporabljen je največji zahtevani iztegniški rezultat Fmax = 64136,449795429005 N iz predaje konstruktorja.",
+        "Za izračun premerov velja p[bar] × 0,1 = p[N/mm²] in A = Fmax/p, D = sqrt(4A/pi).",
+        "Premeri so teoretični; brez protitlaka, tlačnih izgub, standardne izbire premera, preverbe uklona ali batnice.",
+        "Pretok in moč sta ostala nedoločena, ker vhod ne vsebuje lift_time_s.",
+        "Kataloška hidravlika ne vsebuje podatkov o hodu in vgradni meri; zato katalogske ustreznosti ni mogoče potrditi.",
+        "Varnostne funkcije so navedene kot zahteve za strokovno analizo tveganja, ne kot potrjena izvedba naprave."
+      ],
+      "open_questions": [
+        "REQ-09: čas dviga ni podan, zato pretok in moč na gredi ostajata nedoločena.",
+        "REQ-10: ekscentrična obremenitev ni podana; stabilnost pri robnih primerih ni preverjena.",
+        "REQ-11: varnostna kategorija / standardna skladnost ni določena.",
+        "HYD-01 do HYD-04: v katalogu manjkajo hod in vgradne mere.",
+        "Hidravlični izkoristek pogona/črpalke ni podan.",
+        "Ni podatkov o dejanski vgradnji, mrtvi dolžini, bočnih silah in uklonu."
+      ],
+      "calculations": [
+        {
+          "quantity": "peak_required_force",
+          "value": 64136.449795429005,
+          "unit": "N"
+        },
+        {
+          "quantity": "bore_at_160_bar",
+          "value": 71.44100019354329,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_at_200_bar",
+          "value": 63.898773125335374,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_at_250_bar",
+          "value": 57.15280015483464,
+          "unit": "mm"
+        },
+        {
+          "quantity": "bore_at_315_bar",
+          "value": 50.915761160512346,
+          "unit": "mm"
+        },
+        {
+          "quantity": "stroke",
+          "value": 143.08392948278532,
+          "unit": "mm"
+        },
+        {
+          "quantity": "lift",
+          "value": 650,
+          "unit": "mm"
+        },
+        {
+          "quantity": "flow_L_min",
+          "value": 0,
+          "unit": "L/min"
+        },
+        {
+          "quantity": "hydraulic_power_kW",
+          "value": 0,
+          "unit": "kW"
+        }
+      ],
+      "cost_items": [],
+      "outputs": [
+        {
+          "name": "force_curve_points",
+          "value": "11 točk, od 350 mm do 1000 mm",
+          "unit": "-",
+          "basis": "predana deterministična krivulja iz konstruktorja"
+        },
+        {
+          "name": "reference_pressure",
+          "value": "200",
+          "unit": "bar",
+          "basis": "referenca za pretok/moč v zahtevani primerjavi"
+        },
+        {
+          "name": "theoretical_force_capacity_160_bar",
+          "value": "64136.449795429005",
+          "unit": "N",
+          "basis": "A=F/p, teoretični premer pri 160 bar"
+        },
+        {
+          "name": "theoretical_force_capacity_200_bar",
+          "value": "64136.449795429005",
+          "unit": "N",
+          "basis": "A=F/p, teoretični premer pri 200 bar"
+        },
+        {
+          "name": "theoretical_force_capacity_250_bar",
+          "value": "64136.449795429005",
+          "unit": "N",
+          "basis": "A=F/p, teoretični premer pri 250 bar"
+        },
+        {
+          "name": "theoretical_force_capacity_315_bar",
+          "value": "64136.449795429005",
+          "unit": "N",
+          "basis": "A=F/p, teoretični premer pri 315 bar"
+        },
+        {
+          "name": "pressure_note",
+          "value": "Teoretični premeri niso dokaz katalogske izbire ali varne izvedbe.",
+          "unit": "-",
+          "basis": "developer rule"
+        },
+        {
+          "name": "safety_note",
+          "value": "Zahtevana je strokovna analiza tveganja za nosilni ventil, pretrg cevi, omejitev tlaka, nadzor spuščanja, servisno oporo, končna stikala, varovanje škarij in zaustavitev v sili.",
+          "unit": "-",
+          "basis": "developer rule"
+        }
+      ],
+      "decision": "not_applicable",
+      "findings": []
+    },
+    "source_ids": [
+      "CON-01",
+      "REQ-01",
+      "REQ-02",
+      "REQ-03",
+      "REQ-04",
+      "REQ-05",
+      "REQ-06",
+      "REQ-07",
+      "REQ-08",
+      "REQ-09",
+      "REQ-10",
+      "REQ-11",
+      "GEO-01",
+      "GEO-02",
+      "GEO-03",
+      "GEO-04",
+      "HYD-01",
+      "HYD-02",
+      "HYD-03",
+      "HYD-04",
+      "HYD-05",
+      "HYD-06",
+      "HYD-07",
+      "HYD-08",
+      "TEST-01",
+      "TEST-02",
+      "TEST-03",
+      "TEST-04",
+      "TEST-05"
+    ],
+    "proposal": null,
+    "selection": {
+      "cylinder_id": "HYD-01",
+      "pump_id": "HYD-05",
+      "pressure_bar": 200
+    },
+    "requests": [],
+    "request_updates": []
+  },
+  "observed_usage": {
+    "calls": 2,
+    "input_tokens": 40451,
+    "output_tokens": 2096,
+    "estimated_cost_USD": 0.03977025,
+    "per_agent": {
+      "konstruktor": {
+        "calls": 1,
+        "input_tokens": 18700,
+        "output_tokens": 924,
+        "estimated_cost_USD": 0.018183
+      },
+      "hidravlik": {
+        "calls": 1,
+        "input_tokens": 21751,
+        "output_tokens": 1172,
+        "estimated_cost_USD": 0.02158725
+      }
+    }
+  }
+}
