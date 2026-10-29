@@ -168,8 +168,9 @@ def run_trial(config, directory, *, preflight=False):
         status = "awaiting_approval"
     except BaseException as exc:
         from src.engineering.calculations import EngineeringError
+        from src.reporting.source import PackageError
         validation_details = exc.details if isinstance(exc, EngineeringError) else []
-        failure_code = (exc.code if isinstance(exc, (ModelError, EngineeringError))
+        failure_code = (exc.code if isinstance(exc, (ModelError, EngineeringError, PackageError))
                         else "configuration_error" if transport is None and config.mode == "openai"
                         else "interrupted" if isinstance(exc, KeyboardInterrupt)
                         else "validation_or_runtime_error")
@@ -177,6 +178,7 @@ def run_trial(config, directory, *, preflight=False):
     finally:
         report = {"status": status, "mode": config.mode, "engineering_verified": False,
                   "technical_status": result.results["recenzent"].get("technical_status", "not_evaluated") if result else "not_completed",
+                  "development_package": str(Path("runs") / "packages" / f"{handoff.label}_Razvojni_paket.zip") if result else None,
                   "failure_code": failure_code,
                   "validation_details": validation_details,
                   "api_requests_started": bounded.calls if bounded else 0,

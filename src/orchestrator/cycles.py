@@ -72,7 +72,6 @@ class CycleRunner:
                 record["technical_status"] = result.results["recenzent"].get("technical_status", "not_evaluated")
                 record["finished_at"] = now()
                 save()
-                return result
             except BaseException as exc:
                 record["status"] = "stopped"
                 from src.engineering.calculations import EngineeringError
@@ -85,5 +84,25 @@ class CycleRunner:
                 # Persist partial results, never raw exceptions or credentials.
                 save()
                 raise
+            # Document rendering never re-runs agents. A document failure preserves
+            # the completed handoff and is repairable with the offline JSON command.
+            from src.reporting.package import build_package
+            from src.reporting.source import PackageError
+            try:
+                import os
+                manifest = {"run_id": os.environ.get("GITHUB_RUN_ID", "local"),
+                            "commit": os.environ.get("GITHUB_SHA", "local"),
+                            "actor": os.environ.get("GITHUB_ACTOR", "local"),
+                            "configuration": {"mode": mode,
+                                              "model": result.results["konstruktor"].get("trace", {}).get("model", "simulated")}}
+                archive = build_package(record, self.directory / "packages",
+                                        metadata={"input_file": source, "manifest": manifest})
+            except Exception:
+                record["development_package"] = {"status": "failed", "code": "document_generation_failed"}
+                save()
+                raise PackageError("Cikel je zaključen, izdelava paketa pa ni uspela; uporabi shranjeni JSON brez ponovnega API-zagona.") from None
+            record["development_package"] = {"status": "created", "path": str(archive.relative_to(self.directory))}
+            save()
+            return result
         finally:
             lock.unlink()

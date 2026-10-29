@@ -8,6 +8,22 @@ strukturiranim JSON odgovorom. Vsak zagon izvede največ en izrecno odobren cike
 Uporabljaj samo sintetične ali javne podatke. Rezultati modelov in simulacije niso
 strokovna potrditev dimenzioniranja, varnosti, skladnosti ali stroškov naprave.
 
+## Tehnični razvojni paket (Naloga 05)
+
+Po uspešnem upravljanem ciklu se samodejno ustvari ZIP s štirimi PDF poročili,
+Excelovo stroškovno preglednico s formulami in izvirnimi JSON podatki.
+Glej [navodila za izdelavo in prenos](docs/razvojni-paket.md). Dokumenti se
+izdelajo brez novega AI-klica in brez spremembe matematičnih rezultatov.
+
+```sh
+python -m pip install .
+python -m src.reporting pot/do/result.json --metadata-dir pot/do/artifacta --output-dir packages
+```
+
+Ročni workflow **Razvojni paket iz obstojecih rezultatov** omogoča prenos paketa
+iz starega uspešnega zagona (privzeto 40794650126), tudi prek telefona Android.
+Status konstrukcije ostaja `changes_required`, `engineering_verified=false`.
+
 ## Popravek stroškovne predaje (04B)
 
 [Poročilo 04B](docs/economist-04b.md) loči potrjeno zavrnitev seznama stroškov,
@@ -45,11 +61,12 @@ združitvi naloge 03 v `main`.
 
 ## Zagon simulacije
 
-Potrebuješ Python 3.11+ in Git. Simulacija nima zunanjih izvajalnih odvisnosti.
+Potrebuješ Python 3.11+ in Git. Izdelava dokumentov potrebuje ReportLab in openpyxl, ki ju namesti `python -m pip install .`; simulacija ne potrebuje SDK ali API-ključa.
 
 ```sh
 git clone https://github.com/mulecvojko-star/razvoj-dvizne-mize-ai-open.git
 cd razvoj-dvizne-mize-ai-open
+python -m pip install '.[test]'
 python -m unittest discover -s tests -v
 python -m src.orchestrator examples/V01-R01.json --approve-cycle V01-R01
 ```
