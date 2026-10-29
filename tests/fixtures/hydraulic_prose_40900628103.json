@@ -1,0 +1,46 @@
+{
+  "provenance": {
+    "run_id": "40900628103",
+    "commit": "434e951f05409ce4175a26119a2ea242a0042142",
+    "excerpt_sha256": "94262ea29c898a8f0f603439a4696bac3053f31f334005d721de4f745852243a",
+    "scope": "Actual unverified hydraulic prose; structured choice HYD-02 / HYD-05 / 200 bar."
+  },
+  "prose": {
+    "summary": "Primerjava tlakov je narejena; izbrani katalogski kandidat HYD-01 pri 200 bar ne doseže zahtevane idealne sile. Hidravlična izbira, vgradnja in varnost ostajajo nepotrjene; NI PODATKA o času dviga.",
+    "outputs": [
+      {
+        "name": "force_curve_basis",
+        "value": "Prenesena je celotna krivulja sile po višini: največja sila 64136.45 N pri 350 mm, najmanjša 15346.05 N pri 1000 mm; geometrija iz konstruktorske predaje ostaja nespremenjena.",
+        "unit": "-",
+        "basis": "konstruktor R01 + deterministična referenca"
+      },
+      {
+        "name": "hydraulic_selection_status",
+        "value": "HYD-01 / HYD-05 / 200 bar: nominal_force_pass=false; idealna sila 62344.91 N je manjša od zahtevane maksimalne sile 64136.45 N, zato kandidat ostaja izrecno neustrezen/nepotrjen.",
+        "unit": "-",
+        "basis": "deterministic catalogue comparison"
+      },
+      {
+        "name": "safety_note",
+        "value": "Nosilni ventil pri cilindru, zaščita ob pretrgu cevi, omejitev tlaka, nadzor spuščanja, mehanska servisna opora, končna stikala, varovanje škarij in zaustavitev v sili so potrebni elementi; potrebna je strokovna analiza tveganja.",
+        "unit": "-",
+        "basis": "KB-01 safety requirements"
+      }
+    ],
+    "assumptions": [
+      "Uporabljen je bil deterministični konstruktorski rezultat R01 brez spreminjanja fiksnih zahtev REQ-01 do REQ-06.",
+      "Za primerjavo tlakov je uporabljen izračun p[bar]*0.1 = p[N/mm²] in teoretični premer D=sqrt(4A/pi).",
+      "Za katalogski kandidat HYD-01 je uporabljena njegova dejanska izvrtina 63 mm in idealna sila pri izbranem tlaku, ne teoretično potreben premer.",
+      "Brez lift_time_s ni mogoče določiti pretoka in moči; v predaji ostaja NI PODATKA.",
+      "Brez podatkov o izkoristku pogona ni mogoče določiti moči na gredi.",
+      "Ni bila predpostavljena nobena standardna izbira premera, protitlak, tlačne izgube, uklon ali batnica."
+    ],
+    "open_questions": [
+      "NI PODATKA o času dviga (REQ-09).",
+      "NI PODATKA o pretoku pri dejanskem ciklu, ker čas dviga manjka.",
+      "NI PODATKA o moči na gredi, ker izkoristek pogona ni podan.",
+      "NI PODATKA o hodu in vgradni meri izbranega kataloškega cilindra HYD-01.",
+      "NI PODATKA o strokovni analizi tveganja in potrditvi varnostnih funkcij."
+    ]
+  }
+}

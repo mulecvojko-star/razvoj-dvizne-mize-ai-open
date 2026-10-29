@@ -41,8 +41,10 @@ jobs:
             const kind = process.env.SOURCE_KIND;
             if (!/^[1-9][0-9]{0,14}$/.test(id) || !['openai', 'simulated'].includes(kind)) throw new Error('Neveljaven izvor');
             const {data: run} = await github.rest.actions.getWorkflowRun({...context.repo, run_id: Number(id)});
-            if (run.conclusion !== 'success' || run.status !== 'completed' || run.head_branch !== 'main' || run.event !== 'workflow_dispatch' || run.path !== '.github/workflows/ai-trial.yml') throw new Error('Izvor mora biti uspesen rocni cikel iz main');
-            const name = `${kind}-${id}-${run.run_attempt}`;
+            if (run.conclusion !== 'success' || run.status !== 'completed' || run.head_branch !== 'main' || run.event !== 'workflow_dispatch' || !['.github/workflows/ai-trial.yml', '.github/workflows/final-ai-trial.yml'].includes(run.path)) throw new Error('Izvor mora biti uspesen rocni cikel iz main');
+            const finalTrial = run.path === '.github/workflows/final-ai-trial.yml';
+            const name = `${finalTrial ? 'final-' : ''}${kind}-${id}-${run.run_attempt}`;
+            core.setOutput('format', finalTrial ? 'final' : 'legacy');
             const {data} = await github.rest.actions.listWorkflowRunArtifacts({...context.repo, run_id: Number(id)});
             if (!data.artifacts.some(a => a.name === name && !a.expired)) throw new Error('Artifact ne obstaja ali je potekel');
             core.setOutput('artifact_name', name);
@@ -55,10 +57,14 @@ jobs:
       - name: Namesti izdelovalnik dokumentov (brez SDK in API-kljuca)
         run: python -m pip install .
       - name: Ustvari razvojni paket iz shranjenega JSON
+        if: steps.source.outputs.format == 'legacy'
         run: python -m src.reporting source-artifact/result.json --metadata-dir source-artifact --output-dir packages
+      - name: Zakljucni paket iz shranjenega trial.json (brez AI-klica)
+        if: steps.source.outputs.format == 'final'
+        run: python -m src.final_trial --report-only source-artifact/trial.json --output-dir packages
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: razvojni-paket-${{ inputs.source_run_id }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: packages/*_Razvojni_paket.zip
+          path: packages/*.zip
           retention-days: 7
           if-no-files-found: error
