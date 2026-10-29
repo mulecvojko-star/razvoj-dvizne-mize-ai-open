@@ -380,6 +380,18 @@ class OfflineFinalSDKTests(unittest.TestCase):
 
 
 class FinalWorkflowTests(unittest.TestCase):
+    def test_simulation_cli_works_under_real_github_push_environment_without_weakening_paid_gate(self):
+        import subprocess,sys
+        with tempfile.TemporaryDirectory() as d:
+            env={**os.environ,**ENV,'GITHUB_EVENT_NAME':'push','GITHUB_REF':'refs/heads/test',
+                 'FINAL_MODE':'simulated','FINAL_APPROVAL':APPROVAL['simulated']}
+            result=subprocess.run([sys.executable,'-m','src.final_trial','--output-dir',d],cwd=ROOT,env=env,capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stderr)
+            self.assertEqual(json.loads(result.stdout)['api_usage']['call_count'],0)
+            env.update(FINAL_MODE='openai',FINAL_APPROVAL=APPROVAL['openai'])
+            result=subprocess.run([sys.executable,'-m','src.final_trial','--output-dir',d+'-paid'],cwd=ROOT,env=env,capture_output=True,text=True)
+            self.assertNotEqual(result.returncode,0)
+
     def test_manual_secret_scope_and_separate_approval_without_legacy_limit_changes(self):
         workflow=(ROOT/'.github/workflows/final-ai-trial.yml').read_text()
         self.assertIn('workflow_dispatch:',workflow);self.assertNotIn('\n  push:',workflow);self.assertNotIn('\n  schedule:',workflow)

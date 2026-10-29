@@ -40,7 +40,6 @@ jobs:
           if-no-files-found: error
       - name: Offline final trial with Word knowledge base (no model calls)
         env:
-          GITHUB_ACTIONS: 'false'
           FINAL_APPROVAL: ODOBRIM KONCNO SIMULACIJO V01
         run: python -m src.final_trial
       - name: Export final simulation package

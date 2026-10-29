@@ -44,7 +44,9 @@ class Config:
     def validate(self):
         if self.mode not in APPROVAL or self.approval!=APPROVAL[self.mode]:raise ValueError('Manjka ločena izrecna odobritev zaključnega preizkusa.')
         if self.output_tokens!=0 and (type(self.output_tokens)is not int or not 256<=self.output_tokens<=6000):raise ValueError('Neveljavna izhodna omejitev.')
-        if os.getenv('GITHUB_ACTIONS')=='true' or self.mode=='openai':
+        # Offline simulation may run in CI push/PR jobs. Only the paid path
+        # requires a fresh manual main dispatch; it cannot be unlocked by CI.
+        if self.mode=='openai':
             if os.getenv('GITHUB_ACTIONS')!='true' or os.getenv('GITHUB_EVENT_NAME')!='workflow_dispatch' or os.getenv('GITHUB_REF')!='refs/heads/main' or os.getenv('GITHUB_RUN_ATTEMPT')!='1':
                 raise ValueError('Plačljivi način zahteva nov ročni GitHub Actions zagon main; ponovitve niso dovoljene.')
 
