@@ -2,6 +2,7 @@
 
 import math
 from src.models.contracts import digest
+from .costs import allowed_cost_items, cost_issues
 
 
 def review(inputs, constructor, hydraulic, economic):
@@ -92,6 +93,8 @@ def review(inputs, constructor, hydraulic, economic):
                           and close(power, 200 * q / 600) for q, power, r in zip(flows, powers, rows)))
         check("sled stroškov", "ekonomist", economic["source_constructor_sha256"] == digest(constructor)
               and economic["source_hydraulics_sha256"] == digest(hydraulic))
+        for problem in cost_issues(economic.get("cost_items"), allowed_cost_items(arm)):
+            check(f"stroški: {problem['path']} ({problem['category']}): {problem['reason']}", "ekonomist", False)
         check("izvor cen in nepopolna ocena", "ekonomist", economic["verified_prices"] == []
               and economic["total_EUR"] is None
               and all(item["price_kind"] in ("synthetic", "unknown") and bool(item["source"])

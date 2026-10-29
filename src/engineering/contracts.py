@@ -1,9 +1,11 @@
 """Build local stage data and validate numerical claims separately from model prose."""
 
 import math
-from src.models.contracts import digest
+from copy import deepcopy
+from src.models.contracts import ORDER, RESPONSE_SCHEMA, digest
 from .calculations import EngineeringError, construction, economics, enabled, hydraulics
 from .review import review
+from .costs import cost_issues, exact_cost_schema
 
 UNITS = {"length": "mm", "force": "N", "pressure": "bar", "flow": "L/min", "power": "kW", "currency": "EUR"}
 
@@ -59,8 +61,7 @@ def validate_claims(name, model, expected):
                 or not math.isclose(row["value"], target["value"], rel_tol=1e-4, abs_tol=0.01)):
             raise EngineeringError(f"Napačen AI-izračun ali enota: {target['quantity']}.")
     cost_items = expected["cost_items"] if expected is not None and name == "ekonomist" else []
-    if model["cost_items"] != cost_items:
-        raise EngineeringError("Stroški nimajo preverljivega izvora ali ne ustrezajo sintetični oceni.")
+    validate_cost_items(model.get("cost_items"), cost_items)
     if name == "recenzent" and expected is not None:
         if model["decision"] != expected["status"]:
             raise EngineeringError("Recenzent ne sme odobriti nepreverjene konstrukcije.")
@@ -93,3 +94,21 @@ def validate_stage(handoff, name, result):
         raise EngineeringError("Napačno tehnično stanje predaje.")
     if name == "recenzent" and result["decision"] != expected["status"]:
         raise EngineeringError("Tehnično nepreverjene variante ni dovoljeno odobriti.")
+
+
+def validate_cost_items(actual, expected):
+    details = cost_issues(actual, expected)
+    if details:
+        first = details[0]
+        category = first["category"] or "neznana postavka"
+        raise EngineeringError(f"Stroškovna predaja: {first['path']} ({category}): {first['reason']}.", details=details)
+
+
+def response_schema(handoff):
+    schema = RESPONSE_SCHEMA
+    if tuple(handoff.results) == ORDER[:2]:
+        expected = reference(handoff, "ekonomist")
+        if expected is not None:
+            schema = deepcopy(RESPONSE_SCHEMA)
+            schema["properties"]["cost_items"] = exact_cost_schema(expected["cost_items"])
+    return schema

@@ -87,6 +87,8 @@ def validate_schema(value, schema):
     elif kind == "array":
         if not isinstance(value, list):
             raise ValueError("Pričakovan je seznam.")
+        if len(value) < schema.get("minItems", 0) or len(value) > schema.get("maxItems", math.inf):
+            raise ValueError("Seznam nima zahtevanega števila postavk.")
         for item in value:
             validate_schema(item, schema["items"])
     elif kind == "string":

@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 
 from src.models import Handoff
-from src.engineering.contracts import reference, claims, validate_claims
+from src.engineering.contracts import reference, claims, validate_claims, validate_cost_items, response_schema
 from src.models.contracts import (ORDER, RESPONSE_SCHEMA, digest, validate_inputs,
                                   validate_review, validate_schema)
 
@@ -50,12 +50,13 @@ class OpenAITransport:
         if index >= len(ORDER) or tuple(handoff.results) != ORDER[:index]:
             raise ModelError("Napačen vrstni red zahtev.", code="invalid_handoff")
         limit = self.agent_limits[ORDER[index]]
+        schema = response_schema(handoff)
         try:
             response = self.client.responses.create(
                 model=self.model, instructions=instructions,
                 input=json.dumps(handoff.to_dict(), ensure_ascii=False, allow_nan=False),
                 text={"format": {"type": "json_schema", "name": "agent_result",
-                                 "strict": True, "schema": RESPONSE_SCHEMA}},
+                                 "strict": True, "schema": schema}},
                 max_output_tokens=limit, store=False,
             )
         except Exception as exc:
@@ -91,7 +92,7 @@ class OpenAITransport:
 def prompt_parts(instructions, handoff):
     return {"instructions": instructions,
             "handoff": json.dumps(handoff.to_dict(), ensure_ascii=False, allow_nan=False),
-            "schema": json.dumps(RESPONSE_SCHEMA, ensure_ascii=False)}
+            "schema": json.dumps(response_schema(handoff), ensure_ascii=False)}
 
 
 def prepare_instructions(name: str, handoff: Handoff):
@@ -112,6 +113,9 @@ def prepare_instructions(name: str, handoff: Handoff):
     instructions += "\nV calculations vrni vse in samo te količine s preverjenimi vrednostmi in enotami: " + json.dumps(claims(name, engineering))
     instructions += "\nV cost_items ekonomist vrne priložene sintetične/neznane postavke, drugi []. Recenzent mora odprta tveganja vrniti odgovornim target_agent; ne odobri nepreverjene variante."
     instructions += "\nOdgovori jedrnato: summary največ 4 stavke, ne ponavljaj lokalnih tabel v outputs. Iz calculations ohrani vse številke in enote; v cost_items kopiraj postavke, zneske in source dobesedno."
+    if name == "ekonomist" and engineering is not None:
+        instructions += "\nDOVOLJENI COST_ITEMS (kopiraj štiri polja vsake postavke dobesedno; kategorije so enolične, vrstni red ni pomemben): " + json.dumps(engineering["cost_items"], ensure_ascii=False)
+        instructions += "\nsource je identifikacijsko besedilo lokalne sintetične reference, ne mesto za lastno razlago. Razlago, DDV ali dodatne neznanke zapiši v summary/outputs/open_questions, ne v cost_items."
     return instructions, engineering
 
 
@@ -127,6 +131,8 @@ class OpenAIAgent:
             raise ValueError("Napačno zaporedje predaje AI-agentu.")
         instructions, engineering = prepare_instructions(self.name, handoff)
         data, metadata = self.transport.generate(instructions, handoff)
+        if self.name == "ekonomist" and engineering is not None and isinstance(data, dict):
+            validate_cost_items(data.get("cost_items"), engineering["cost_items"])
         validate_schema(data, RESPONSE_SCHEMA)
         if (data["variant"], data["revision"], data["agent"]) != (
                 handoff.variant, handoff.revision, self.name):
