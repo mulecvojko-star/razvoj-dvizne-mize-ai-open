@@ -41,6 +41,8 @@ class Orchestrator:
             output.validate()
             if (output.variant, output.revision) != identity:
                 raise ValueError(f"Agent {agent.name} je spremenil varianto ali revizijo.")
+            if output.revision_context != current.revision_context:
+                raise ValueError("Agent je spremenil zaklenjen revizijski kontekst.")
             if output.inputs != current.inputs or output.input_sources != current.input_sources:
                 raise ValueError(f"Agent {agent.name} je spremenil vhodne podatke.")
             if tuple(output.results) != ORDER[:index + 1]:

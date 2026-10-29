@@ -46,6 +46,8 @@ class OpenAITransport:
         self.max_output_tokens = max_output_tokens
 
     def generate(self, instructions: str, handoff: Handoff):
+        if handoff.revision_context:
+            raise ModelError("Plačljivi večrevizijski način je onemogočen; potrebna sta ločen načrt in odobritev.", code="multi_revision_paid_disabled")
         index = len(handoff.results)
         if index >= len(ORDER) or tuple(handoff.results) != ORDER[:index]:
             raise ModelError("Napačen vrstni red zahtev.", code="invalid_handoff")
@@ -126,6 +128,8 @@ class OpenAIAgent:
 
     def run(self, handoff: Handoff) -> Handoff:
         handoff.validate()
+        if handoff.revision_context:
+            raise ModelError("Plačljivi večrevizijski način je onemogočen.", code="multi_revision_paid_disabled")
         validate_inputs(handoff)
         if self.name not in ORDER or tuple(handoff.results) != ORDER[:ORDER.index(self.name)]:
             raise ValueError("Napačno zaporedje predaje AI-agentu.")

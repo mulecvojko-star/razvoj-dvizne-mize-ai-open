@@ -42,7 +42,7 @@ def obj(properties):
 STRING = {"type": "string"}
 STRINGS = {"type": "array", "items": STRING}
 FINDING = obj({
-    "id": STRING, "target_agent": {"type": "string", "enum": list(ORDER)},
+    "id": STRING, "target_agent": {"anyOf": [{"type": "string", "enum": list(ORDER)}, {"type": "null"}]},
     "severity": {"type": "string", "enum": ["info", "minor", "major", "critical"]},
     "status": {"type": "string", "enum": ["open", "resolved"]},
     "description": STRING,
