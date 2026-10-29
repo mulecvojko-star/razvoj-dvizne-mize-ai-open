@@ -284,3 +284,20 @@ python -m src.orchestrator.revisions examples/V01-R01.json \
 Skupni ZIP vsebuje oba razvojna paketa, primerjalni PDF, naloge s statusi in izvorna
 JSON. Za telefon uporabi ročni workflow **Dve reviziji V01 (samo simulacija)**.
 Podrobnosti: [politika, zagon in omejitve revizij](docs/revizije-V01.md).
+
+## Zaključni preizkus 07–09 z Wordovo bazo
+
+Nova pot `python -m src.final_trial` poveže neposredno branje DOCX s štirimi agenti,
+sledljivimi zahtevki, neodvisnimi izračuni, omejenimi revizijami in desetdatotečnim
+končnim paketom. Obstoječi zagoni Naloge 06 in enocikličnega AI-preizkusa ostajajo.
+
+```sh
+FINAL_APPROVAL='ODOBRIM KONCNO SIMULACIJO V01' python -m src.final_trial
+```
+
+Za dejanski preizkus uporabi ločeno odobren ročni workflow **Zakljucni AI preizkus
+V01 (rocno)** z okoljem `ai-trial`. Absolutni limit je 16 klicev, štirje na vlogo;
+trenutni Word REQ-07 dodatno omeji izvedbo na največ R02 oziroma osem klicev.
+Privzeti lokalni stroškovni prag je 3 USD. Neznani podatki in nepreverjena
+konstrukcija ostanejo izrecno označeni. [Zagon na Androidu, cenik, odobritev in
+omejitve](docs/zakljucni-preizkus-07-09.md).
